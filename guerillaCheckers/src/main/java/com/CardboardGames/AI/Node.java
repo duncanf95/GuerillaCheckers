@@ -52,6 +52,7 @@ public class Node {
             Log.d("node C_Piece Pos X" + Integer.toString(counter), Integer.toString(pos.x));
             Log.d("C_Piece Pos Y" + Integer.toString(counter), Integer.toString(pos.y));
             counter++;
+            //change
         }
 
     }

@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/drawable-mdpi_board_default.jpg.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/drawable-mdpi/board_default.jpg"
+    },
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/drawable-ldpi_board_default.jpg.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/drawable-ldpi/board_default.jpg"
+    },
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/drawable-hdpi_board_default.jpg.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/drawable-hdpi/board_default.jpg"
+    },
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/drawable-mdpi_icon.png.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/drawable-mdpi/icon.png"
+    },
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/drawable-hdpi_icon.png.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/drawable-hdpi/icon.png"
+    },
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/layout_main.xml.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/layout/main.xml"
+    },
+    {
+        "merged": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/res/merged/debug/drawable-ldpi_icon.png.flat",
+        "source": "/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/src/main/res/drawable-ldpi/icon.png"
+    }
+]

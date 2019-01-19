@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <instant-run
-    abi="arm64-v8a,armeabi-v7a,armeabi"
+    abi="x86"
     api-level="28"
     build-mode="FULL"
+    density="xhdpi"
     format="10"
     plugin-version="3.2.1"
-    timestamp="1546778616362"
+    timestamp="1547856769937"
     token="-1342279137030346908"
     verifier="FULL_BUILD_REQUESTED" >
 
@@ -17,87 +18,147 @@
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="82" />
+        duration="0" />
     <task
         name="verifier"
-        duration="4" />
+        duration="0" />
 
     <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/resources/instant-run/debug/resources-debug.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_2.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_1.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_3.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_0.apk"
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/resources/instant-run/debug/resources-debug.apk"
         type="SPLIT" />
     <artifact
         location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_4.apk"
         type="SPLIT" />
     <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_1.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_8.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_3.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_6.apk"
+        type="SPLIT" />
+    <artifact
         location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_9.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_5.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_8.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_6.apk"
         type="SPLIT" />
     <artifact
         location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_7.apk"
         type="SPLIT" />
     <artifact
-        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/instant-run-apk/debug/guerillaCheckers-debug.apk"
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_3.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_1.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_2.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_7.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_5.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_5.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_4.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_8.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_0.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_9.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_6.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_0.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_2.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/instant-run-apk/debug/guerillaCheckers-debug.apk"
         type="SPLIT_MAIN" />
 
     <build
         build-mode="FULL"
-        timestamp="1546778616362"
+        timestamp="1547856769937"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/resources/instant-run/debug/resources-debug.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_2.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_1.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_3.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_0.apk"
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/resources/instant-run/debug/resources-debug.apk"
             type="SPLIT" />
         <artifact
             location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_4.apk"
             type="SPLIT" />
         <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_1.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_8.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_3.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_6.apk"
+            type="SPLIT" />
+        <artifact
             location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_9.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_5.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_8.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_6.apk"
             type="SPLIT" />
         <artifact
             location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_7.apk"
             type="SPLIT" />
         <artifact
-            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/instant-run-apk/debug/guerillaCheckers-debug.apk"
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_3.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_1.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_2.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_7.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_5.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_5.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_4.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_8.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_0.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_9.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_6.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_0.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/split-apk/debug/slices/slice_2.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/instant-run-apk/debug/guerillaCheckers-debug.apk"
             type="SPLIT_MAIN" />
     </build>
 

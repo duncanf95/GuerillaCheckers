@@ -108,11 +108,11 @@ public class ADVAgent {
 
     private Point guerillaDecision(){
         Point decision = null;
-        ArrayList<Point> potMoves = view.getGuerillaPotentialMoves();
+        ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         Random rand = new Random();
         nodes = new ArrayList<Node>(potMoves.size());
         for(Point p: potMoves){
-            Node newNode = new Node(model, p);
+            Node newNode = new Node(model, p, null);
             nodes.add(newNode);
         }
 

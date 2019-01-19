@@ -416,6 +416,36 @@ public class BoardModel {
 		return super.clone();
 	}
 
+	public ArrayList<Point> getPotentialGuerillaMoves(){
+		ArrayList<Point> potentialMoves = new ArrayList<Point>();
+		for (int idx_col = 0; idx_col < COLS; ++idx_col) {
+			for (int idx_row = 0; idx_row < ROWS; ++idx_row) {
+				Point point = new Point(idx_col, idx_row);
+				if (isValidGuerillaPlacement(point)) {
+					potentialMoves.add(point);
+				}
+			}
+		}
+		return potentialMoves;
+	}
+
+	public ArrayList<Point> getCoinPotentialMoves(BoardModel.Piece p){
+		ArrayList<Point> potentialMoves = new ArrayList<Point>();
+
+		for (int idx_col = 0; idx_col < COLS; ++idx_col) {
+			for (int idx_row = 0; idx_row < ROWS; ++idx_row) {
+				Point point = new Point(idx_col, idx_row);
+				if (isValidCoinMove(p, idx_col, idx_row)){
+					potentialMoves.add(point);
+				}
+
+			}
+		}
+
+
+		return potentialMoves;
+	}
+
 	public char getPlayer(){ return playerSelection; }
 
 	/// CONSTANTS

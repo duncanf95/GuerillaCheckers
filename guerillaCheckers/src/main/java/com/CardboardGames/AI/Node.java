@@ -11,14 +11,19 @@ public class Node {
     private BoardModel model = null;
     private ArrayList<BoardModel.Piece> g_pieces = null;
     private ArrayList<BoardModel.Piece> c_pieces = null;
+    private Node parent = null;
+    private ArrayList<Node> children = null;
 
-    public Node(BoardModel in_model, Point p){
+    public Node(BoardModel in_model, Point p, Node in_parent){
         model = new BoardModel(null);
+        parent = in_parent;
+
         try {
             model = (BoardModel) in_model.clone();
         }catch(Exception e){
             Log.d("", "Node: " + e);
         }
+
         model.placeGuerillaPiece(p);
         if(model.getGPieces() != null) g_pieces = model.getGPieces();
         Point pos = null;
@@ -28,6 +33,10 @@ public class Node {
             Log.d("node C_Piece Pos X", Integer.toString(pos.x));
             Log.d("Node C_Piece Pos Y", Integer.toString(pos.y));
         }
+    }
+
+    public void expand(){
+
     }
 
     public void debug(){

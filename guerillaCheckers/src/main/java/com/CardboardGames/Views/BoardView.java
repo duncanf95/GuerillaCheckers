@@ -233,15 +233,12 @@ public class BoardView extends View
 	public ArrayList<Point> getGuerillaPotentialMoves(){
 		ArrayList<Point> potentialMoves = new ArrayList<Point>();
 		int color = setAlpha(GUERILLA_PIECE_CLR, 0x66);
-		m_paint.setColor(color);
 		for (int idx_col = 0; idx_col < BoardModel.COLS; ++idx_col) {
 			for (int idx_row = 0; idx_row < BoardModel.ROWS; ++idx_row) {
 				Point point = new Point(idx_col, idx_row);
 				if (m_model.isValidGuerillaPlacement(point)) {
 					potentialMoves.add(point);
 				}
-
-
 			}
 		}
 

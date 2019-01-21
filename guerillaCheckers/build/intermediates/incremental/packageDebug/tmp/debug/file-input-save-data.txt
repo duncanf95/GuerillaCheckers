@@ -1,7 +1,7 @@
 #Internal package file, do not edit.
-#Sat Jan 19 12:01:04 GMT 2019
+#Mon Jan 21 15:26:04 GMT 2019
 0.baseType=DIRECTORY
-0.base=/Users/Duncan/IdeaProjects/GuerillaCheckers/guerillaCheckers/build/intermediates/transforms/dexMerger/debug/0
+0.base=/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/transforms/dexMerger/debug/0
 0.path=classes.dex
 0.set=DEX
 count=1

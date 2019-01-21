@@ -8,6 +8,9 @@ import com.CardboardGames.Controllers.GameController;
 import com.CardboardGames.GuerillaCheckers.Core.Piece;
 import com.CardboardGames.Models.BoardModel;
 import com.CardboardGames.Views.BoardView;
+import com.CardboardGames.DataStructures.BinarySort;
+
+import java.util.BitSet;
 import java.util.Random;
 
 import java.util.ArrayList;
@@ -19,14 +22,14 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> g_pieces = null;
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
-    private ArrayList<Node> nodes = null;
+    private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
 
     public ADVAgent(){
         //model = in_model;
         //view = in_view;
         //debugInfo();
-
     }
+
 
     public void setView(BoardView in_view){
         view = in_view;
@@ -110,12 +113,40 @@ public class ADVAgent {
         Point decision = null;
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         Random rand = new Random();
-        nodes = new ArrayList<Node>(potMoves.size());
-        for(Point p: potMoves){
-            Node newNode = new Node(model, p, null);
-            nodes.add(newNode);
+
+        Node tree = new Node(model, null, null);
+        ArrayList<Node> currentLevel = tree.expandGuerilla();
+
+        for(int i = 0; i < 4; i++){
+            Log.d("guerillaDecision", " Level 1");
+            if (nodes.size() < i+1) nodes.add(new BinarySort());
+            if(i == 0) {
+                for (Node n : currentLevel) {
+                    ArrayList<Node> newNodes = n.expandGuerilla();
+                    for (Node g : newNodes) {
+                        nodes.get(i).push(n);
+                    }
+                }
+            }else{
+                BinarySort temp = nodes.get(i - 1);
+
+                for (Node n : nodes.get(i-1).GetSort()) {
+                    ArrayList<Node> newNodes = n.expandGuerilla();
+                    for (Node g : newNodes) {
+                        nodes.get(i).push(g);
+                    }
+                }
+            }
+        }
+        int treesize = 0;
+        for(BinarySort a: nodes){
+            treesize += a.GetSort().size();
+            for(Node e: a.GetSort()){
+                Log.d("guerillaDecision", String.valueOf(e.getReward()));
+            }
         }
 
+        Log.d("guerillaDecision", "Tree size = " + treesize);
 
         int moveIndex = rand.nextInt(potMoves.size());
 

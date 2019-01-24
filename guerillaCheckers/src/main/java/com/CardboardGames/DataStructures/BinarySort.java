@@ -107,7 +107,9 @@ public class BinarySort {
         }
     }
 
-    public void pop(){}
+    public void pop(Node n){
+        NodeList.remove(n);
+    }
 
     public ArrayList<Node> GetSort(){return NodeList;}
 

@@ -20,42 +20,43 @@ public class Node {
     private float initialReward = 0;
     private char moveType;
     private char agentType;
+    private Point choice;
 
     private enum GameState {
         GUERILLA_SETUP_FIRST{
             @Override
             public String toString(){
-                return "GS1";
+                return "g";
             }
         },
         GUERILLA_SETUP_SECOND{
             @Override
             public String toString(){
-                return "GS2";
+                return "g";
             }
         },
         COIN_MOVE{
             @Override
             public String toString(){
-                return "CM";
+                return "c";
             }
         },
         COIN_CAPTURE{
             @Override
             public String toString(){
-                return "CC";
+                return "c";
             }
         },
         GUERILLA_MOVE_FIRST{
             @Override
             public String toString(){
-                return "GM1";
+                return "g";
             }
         },
         GUERILLA_MOVE_SECOND{
             @Override
             public String toString(){
-                return "GM2";
+                return "g";
             }
         },
         END_GAME{
@@ -74,6 +75,7 @@ public class Node {
         reward = rand.nextInt(100);
         agentType = in_agentType;
         initialReward += reward;
+        choice = p;
         try {
             model = (BoardModel) in_model.clone();
         }catch(Exception e){
@@ -258,5 +260,13 @@ public class Node {
 
     public void setStateExpand(GameState s){
         state = s;
+    }
+
+    public String getState(){
+        return state.toString();
+    }
+
+    public Point getChoice(){
+        return choice;
     }
 }

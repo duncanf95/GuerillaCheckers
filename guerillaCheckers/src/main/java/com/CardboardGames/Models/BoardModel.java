@@ -16,9 +16,10 @@ public class BoardModel {
 
 		if(in_agent != null){
 			agent = in_agent;
-			initPieces();
+
 			agent.setModel(this);
 		}
+		initPieces();
 
 	}
 

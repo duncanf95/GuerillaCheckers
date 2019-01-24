@@ -23,6 +23,10 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
+    private int maxDepth = 3;
+
+
+
 
     public ADVAgent(){
         //model = in_model;
@@ -114,15 +118,20 @@ public class ADVAgent {
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         Random rand = new Random();
 
-        Node tree = new Node(model, null, null);
-        ArrayList<Node> currentLevel = tree.expandGuerilla();
+        Node tree = new Node(model, null, null, ' ', agentPlayer);
+        ArrayList<Node> currentLevel = new ArrayList<Node>();
+
+        for (Point p: potMoves){
+            Node newNode = new Node(model, null, null, ' ', agentPlayer);
+            newNode.setState('g');
+            currentLevel.add(newNode);
+        }
 
         for(int i = 0; i < 4; i++){
-            Log.d("guerillaDecision", " Level 1");
             if (nodes.size() < i+1) nodes.add(new BinarySort());
             if(i == 0) {
                 for (Node n : currentLevel) {
-                    ArrayList<Node> newNodes = n.expandGuerilla();
+                    ArrayList<Node> newNodes = n.expand();
                     for (Node g : newNodes) {
                         nodes.get(i).push(n);
                     }
@@ -131,7 +140,7 @@ public class ADVAgent {
                 BinarySort temp = nodes.get(i - 1);
 
                 for (Node n : nodes.get(i-1).GetSort()) {
-                    ArrayList<Node> newNodes = n.expandGuerilla();
+                    ArrayList<Node> newNodes = n.expand();
                     for (Node g : newNodes) {
                         nodes.get(i).push(g);
                     }
@@ -182,6 +191,17 @@ public class ADVAgent {
 
         return decision;
     }
+
+    private void treeSearch()
+    {
+        boolean decisionMade = false;
+        int tree_level = 0;
+
+        while(!decisionMade){
+
+        }
+    }
+
 
 
 

@@ -20,7 +20,8 @@ public class Node {
     private float initialReward = 0;
     private char moveType;
     private char agentType;
-    private Point choice;
+    private Point choice = null;
+    private boolean depthReached = false;
 
     private enum GameState {
         GUERILLA_SETUP_FIRST{
@@ -72,7 +73,7 @@ public class Node {
     public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType){
         model = new BoardModel(null);
         parent = in_parent;
-        reward = rand.nextInt(100);
+        reward = rand.nextInt(10000);
         agentType = in_agentType;
         initialReward += reward;
         choice = p;
@@ -82,9 +83,14 @@ public class Node {
             Log.d("", "Node: " + e);
         }
         if(parent != null) {
-            model.placeGuerillaPiece(p);
+
             moveType = in_moveType;
             checkScore();
+        }
+        if(p != null) {
+            model.placeGuerillaPiece(p);
+        }else {
+            Log.d("Gpp", " null move");
         }
         if(model.getGPieces() != null) g_pieces = model.getGPieces();
         Point pos = null;
@@ -105,22 +111,22 @@ public class Node {
         Log.d("expandState", state.toString());
         switch(state){
             case GUERILLA_SETUP_FIRST:
-                expandGuerilla();
+                //expandGuerilla();
             case GUERILLA_SETUP_SECOND:
-                expandGuerilla();
+               // expandGuerilla();
             case GUERILLA_MOVE_FIRST:
-                expandGuerilla();
+                //expandGuerilla();
             case GUERILLA_MOVE_SECOND:
-                expandGuerilla();
+                //expandGuerilla();
             case COIN_MOVE:
-                expandCoin();
+                //expandCoin();
             case COIN_CAPTURE:
-                expandCoin();
+                //expandCoin();
         }
         return children;
     }
 
-    public ArrayList<Node> expandCoin(){
+    public ArrayList<Node> expandCoin(int maxLevel, int currentLevel){
         ArrayList<BoardModel.Piece> pieces = model.getCPieces();
         Log.d("Coin", "expanded");
         Log.d("Coin", "amount of pieces " + pieces.size());
@@ -134,25 +140,76 @@ public class Node {
                 Node child = new Node(model, point, this, 'c', agentType);
                 child.setStateExpand(state);
                 child.moveToNextState();
-                children.add(child);
+                if(state.toString() != Character.toString(agentType)){
+                    if (child.getReward() <= reward  || !depthReached){
+                        Log.d("Coin","expanding child");
+                        child.Expand(maxLevel, currentLevel + 1);
+                        children.add(child);
+                    }
+                }else if(state.toString() == Character.toString(agentType) ){
+                    if (child.getReward() >= reward || !depthReached){
+                        Log.d("Coin","expanding child");
+                        child.Expand(maxLevel, currentLevel + 1);
+                        children.add(child);
+                    }
+                }
             }
+        }
+        Log.d("expandCoin currentlevel", Integer.toString(currentLevel));
+        Log.d("expandCoin currentscore", Float.toString(reward));
+        expanded = true;
+        return children;
+    }
+
+    public ArrayList<Node> expandGuerilla(int maxLevel, int currentLevel){
+        Log.d("guerilla", "expanded");
+        ArrayList<Point> potmoves = model.getPotentialGuerillaMoves();
+
+        for(Point point: potmoves){
+            checkDepthReached();
+            Node child = new Node(model, point, this, 'g', agentType);
+            child.setStateExpand(state);
+            child.moveToNextState();
+            Log.d("Guerilla","current state " + state.toString());
+            if(state.toString() != Character.toString(agentType)){
+                if (child.getReward() <= reward  || !depthReached){
+                    Log.d("Guerilla","expanding child");
+                    child.Expand(maxLevel, currentLevel + 1);
+                    children.add(child);
+                }
+            }else if(state.toString() == Character.toString(agentType) ){
+                if (child.getReward() >= reward || !depthReached){
+                    Log.d("Guerilla","expanding child");
+                    child.Expand(maxLevel, currentLevel + 1);
+                    children.add(child);
+                }
+            }
+            Log.d("Gp currentlevel", Integer.toString(currentLevel));
+            Log.d("Gp currentscore", Float.toString(reward));
+            Log.d("Gpp amount of pieces", Integer.toString(model.getNumGuerillaPieces()));
+
         }
         expanded = true;
         return children;
     }
 
-    public ArrayList<Node> expandGuerilla(){
-        Log.d("guerilla", "expanded");
-        ArrayList<Point> potmoves = model.getPotentialGuerillaMoves();
-
-        for(Point point: potmoves){
-            Node child = new Node(model, point, this, 'g', agentType);
-            child.setStateExpand(state);
-            child.moveToNextState();
-            children.add(child);
+    public void Expand(int maxLevel, int currentLevel){
+        if(currentLevel <= maxLevel) {
+            Log.d("Expand cl", Integer.toString(currentLevel));
+            if (state.toString() == "g") {
+                Log.d("Expand", "found state g");
+                expandGuerilla(maxLevel,currentLevel);
+            } else if (state.toString() == "c"){
+                Log.d("Expand", "found state c");
+                Log.d("Expand", Integer.toString(maxLevel));
+                expandCoin(maxLevel,currentLevel);
+            } else {
+                Log.d("Expand", "state not found");
+            }
+        }else if(currentLevel > maxLevel){
+            setDepthReached(true);
+            Log.d("Expand", "depth reached");
         }
-        expanded = true;
-        return children;
     }
 
     public void debug(){
@@ -189,10 +246,19 @@ public class Node {
     public void checkScore(){
         Log.d("checkScore", "checked");
         if(parent != null){
-            if(reward > parent.getReward()){
-                Log.d("checkScore", "changed");
-                parent.setReward(reward);
-                parent.checkScore();
+            if(parent.getState() == Character.toString(agentType)) {
+
+                if (reward > parent.getReward()) {
+                    Log.d("checkScore", "changed");
+                    parent.setReward(reward);
+                    parent.checkScore();
+                }
+            }else{
+                if (reward < parent.getReward()) {
+                    Log.d("checkScore", "changed");
+                    parent.setReward(reward);
+                    parent.checkScore();
+                }
             }
         }
     }
@@ -253,7 +319,7 @@ public class Node {
                 state = GameState.GUERILLA_SETUP_FIRST;
 
             case 'c':
-                Log.d("setState", "guerilla");
+                Log.d("setState", "coin");
                 state = GameState.COIN_MOVE;
         }
     }
@@ -269,4 +335,22 @@ public class Node {
     public Point getChoice(){
         return choice;
     }
+
+    public boolean getDepthReached(){
+        return depthReached;
+    }
+
+    public void checkDepthReached(){
+        if (parent.getDepthReached()){
+            depthReached = true;
+        }
+    }
+
+    public void setDepthReached(boolean d){
+        depthReached = d;
+        if (parent!=null) {
+            parent.setDepthReached(d);
+        }
+    }
+
 }

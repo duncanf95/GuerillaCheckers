@@ -23,7 +23,7 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
-    private int maxDepth = 4;
+    private int maxDepth = 10;
 
 
 
@@ -111,6 +111,7 @@ public class ADVAgent {
     private void placePieceGuerilla(){
         Point decision = guerillaDecision();
         if(decision != null) {
+            Log.d("placePieceGuerilla", "decision not null");
             model.placeGuerillaPiece(decision);
         }
     }
@@ -120,49 +121,12 @@ public class ADVAgent {
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         Random rand = new Random();
 
-        Node tree = new Node(model, null, null, ' ', agentPlayer);
+
         ArrayList<Node> currentLevel = new ArrayList<Node>();
 
-        for (Point p: potMoves){
-            Node newNode = new Node(model, null, null, ' ', agentPlayer);
-            newNode.setState('g');
-            currentLevel.add(newNode);
-        }
-        /*
-        for(int i = 0; i < 3; i++){
-            if (nodes.size() < i+1) nodes.add(new BinarySort());
-            if(i == 0) {
-                for (Node n : currentLevel) {
-                    ArrayList<Node> newNodes = n.expand();
-                    for (Node g : newNodes) {
-                        nodes.get(i).push(n);
-                    }
-                }
-            }else{
-                BinarySort temp = nodes.get(i - 1);
-
-                for (Node n : nodes.get(i-1).GetSort()) {
-                    ArrayList<Node> newNodes = n.expand();
-                    for (Node g : newNodes) {
-                        nodes.get(i).push(g);
-                    }
-                }
-            }
-        }
-        int treesize = 0;
-        for(BinarySort a: nodes){
-            treesize += a.GetSort().size();
-            for(Node e: a.GetSort()){
-                Log.d("guerillaDecision", String.valueOf(e.getReward()));
-            }
-        }
-
-        Log.d("guerillaDecision", "Tree size = " + treesize);
-
-        int moveIndex = rand.nextInt(potMoves.size());
-    */
         decision = treeSearch();
-        //decision = potMoves.get(moveIndex);
+
+
 
         return decision;
     }
@@ -179,10 +143,13 @@ public class ADVAgent {
         ArrayList<Point> potMoves = null;
 
         Random rand = new Random();
-        int pieceIndex = rand.nextInt(potPieces.size());
+        for(BoardModel.Piece piece: potPieces) {
+            selectedPiece = piece;
+            potMoves = view.getCoinPotentialMoves(selectedPiece);
+            for(Point point: potMoves){
 
-        selectedPiece = potPieces.get(pieceIndex);
-        potMoves = view.getCoinPotentialMoves(selectedPiece);
+            }
+        }
         int moveIndex = rand.nextInt(potMoves.size());
 
         model.setSelectedCoinPiece(selectedPiece);
@@ -197,96 +164,57 @@ public class ADVAgent {
 
     private Point treeSearch()
     {
-        ArrayList<Node> expandedTopLevel = new ArrayList<Node>();
-        boolean decisionMade = false;
-        int tree_level = 1;
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         Log.d("treeSearch", "init");
         BinarySort firstLevel = new BinarySort();
+        int nodesChecked = 0;
+        int nodesExpanded = 0;
 
         Log.d("treeSearch", "entering potential moves");
+        int counter = 0;
         for (Point p: potMoves){
             Log.d("treeSearch", "potential move");
             Node newNode = new Node(model, p, null, ' ', agentPlayer);
             newNode.setState('g');
             firstLevel.push(newNode);
+            counter += 1;
+
         }
         Log.d("treeSearch", "selecting node");
-        Node currentNode = firstLevel.GetSort().get(firstLevel.GetSort().size() - 1);
 
-        Log.d("treeSearch", "entering while");
-        while(firstLevel.GetSort().size() != 0){
-            ArrayList<Node> currentNodes = currentNode.expand();
-            Log.d("treeSearch", "expand");
-            if (nodes.size() < tree_level){
-                nodes.add(new BinarySort());
-            }
-
-            Log.d("treeSearch", "entering for");
-            for(Node n: currentNodes){
-                nodes.get(tree_level - 1).push(n);
-            }
-
-            Log.d("treeSearch", "entering next while");
-            while(tree_level != maxDepth){
-                Log.d("treeSearch", "in first while");
-
-                currentNodes = nodes.get(tree_level - 1).GetSort();
-                Log.d("treeSearch", "got nodes from current level");
-                if(currentNodes.get(0).getState() == Character.toString(agentPlayer)) {
-                    Log.d("treeSearch", "selecting current node");
-                    currentNode = currentNodes.get(currentNodes.size() - 1);
-                }else{
-                    currentNode = currentNodes.get(0);
-                }
-                tree_level+=1;
-                if (nodes.size() < tree_level){
-                    Log.d("treeSearch", "adding sort");
-                    nodes.add(new BinarySort());
-                    Log.d("treeSearch", "added sort");
-                }
-
-                for(Node n: currentNode.expand()){
-                    nodes.get(tree_level - 1).push(n);
-                }
-
-            }
-            currentNode.checkScore();
-            tree_level -= 1;
-
-            Log.d("treeSearch", "entering 3rd while");
-            while (tree_level != 1){
-                currentNodes = nodes.get(tree_level -1).GetSort();
-                ArrayList<Node> currentExpanded = new ArrayList<Node>();
-                while(currentNodes.size() != 0){
-                    if(currentNodes.get(0).getState() == Character.toString(agentPlayer)) {
-                        currentNode = currentNodes.get(currentNodes.size() - 1);
-                    }else{
-                        currentNode = currentNodes.get(0);
-                    }
-                    currentNode.checkScore();
-                    currentNodes.remove(currentNode);
-                }
-                tree_level -= 1;
-            }
-            expandedTopLevel.add(firstLevel.GetSort().get(firstLevel.GetSort().size() - 1));
-            firstLevel.pop(firstLevel.GetSort().get(firstLevel.GetSort().size() - 1));
+        if(firstLevel.GetSort().size() != 0){
+        //Node currentNode = firstLevel.GetSort().get(firstLevel.GetSort().size() - 1);
+        for (Node n: firstLevel.GetSort()){
+            n.Expand(maxDepth,0);
         }
+
+
+        }
+
 
 
         float max = 0;
         Node maxNode = null;
-        Log.d("treeSearch, choice size", Integer.toString(expandedTopLevel.size()));
-        for(Node n: expandedTopLevel){
+        Log.d("treeSearch, choice size", Integer.toString(firstLevel.GetSort().size()));
+        for(Node n: firstLevel.GetSort()){
             Log.d("treeSearch", "selecting choice");
             if (n.getReward() > max){
-                maxNode = n;
+                if(n.getChoice() != null) {
+                    maxNode = n;
+                }
             }
 
         }
-
-        Log.d("treeSearch, choice", maxNode.getChoice().toString());
-        return maxNode.getChoice();
+        if(maxNode != null) {
+            Log.d("treeSearch, choice", maxNode.getChoice().toString());
+        }
+        Log.d("treeSearch", "Nodes expanded: " + nodesExpanded);
+        Log.d("treeSearch", "Nodes checked " + nodesChecked);
+        if(maxNode != null) {
+            return maxNode.getChoice();
+        }else{
+            return null;
+        }
     }
 
 

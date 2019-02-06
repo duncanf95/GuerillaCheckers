@@ -377,6 +377,21 @@ public class BoardModel implements Cloneable {
 
 		public Point getPosition() { return position; }
 		public void setPosition(Point position) { this.position = position; }
+		public Piece clone() throws CloneNotSupportedException {
+			Piece newPiece = (Piece)super.clone();
+
+			try{
+				int x = 0;
+				int y = 0;
+				x += position.x;
+				y += position.y;
+				newPiece.setPosition(new Point(x,y));
+
+			}catch (Exception e){
+
+			}
+			return newPiece;
+		}
 	}
 
 	public enum Player {
@@ -415,9 +430,23 @@ public class BoardModel implements Cloneable {
 		Log.d("debug", "set agent: " + agentSelection);
 	}
 
-	public Object clone() throws CloneNotSupportedException
+	public BoardModel clone() throws CloneNotSupportedException
 	{
-		return super.clone();
+		BoardModel cloneModel = (BoardModel) super.clone();
+		try {
+			cloneModel.setGpieces((ArrayList<Piece>) getGPieces().clone());
+			cloneModel.setCpieces((ArrayList<Piece>) getCPieces().clone());
+			ArrayList<Piece> newPieces = new ArrayList<Piece>();
+			for(Piece p: cloneModel.getCPieces()){
+				newPieces.add(p.clone());
+			}
+			cloneModel.setCpieces(newPieces);
+		}catch(Exception e){
+
+		}
+
+
+		return cloneModel;
 	}
 
 	public ArrayList<Point> getPotentialGuerillaMoves(){
@@ -449,6 +478,11 @@ public class BoardModel implements Cloneable {
 
 		return potentialMoves;
 	}
+
+	public void RestorePiece(){
+		m_coinPieces.add(new Piece(new Point(0,0)));
+	}
+
 
 	public char getPlayer(){ return playerSelection; }
 

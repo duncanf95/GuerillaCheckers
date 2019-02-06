@@ -78,7 +78,7 @@ public class Node {
         initialReward += reward;
         choice = p;
         try {
-            model = (BoardModel) in_model.clone();
+            model = in_model.clone();
             Log.d("clone success", " node");
             Log.d("model in mem", in_model.toString());
             Log.d("model out mem", model.toString());
@@ -92,6 +92,7 @@ public class Node {
             checkScore();
         }
         if(model.getGPieces() != null) g_pieces = model.getGPieces();
+        if(model.getCPieces() != null) c_pieces = model.getCPieces();
         Point pos = null;
 
         //debug prints
@@ -129,6 +130,20 @@ public class Node {
         ArrayList<BoardModel.Piece> pieces = model.getCPieces();
         Log.d("Coin", "expanded");
         Log.d("Coin", "amount of pieces " + pieces.size());
+
+        ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+
+
+        for (BoardModel.Piece p: model.getCPieces()){
+            int x = 0;
+            int y = 0;
+
+
+            x += p.getPosition().x;
+            y += p.getPosition().y;
+
+            OriginalPositions.add(new Point(x,y));
+        }
         for(BoardModel.Piece p: pieces) {
             ArrayList<Point> potmoves = model.getCoinPotentialMoves(p);
             Log.d("Coin", "found pieces");
@@ -153,6 +168,15 @@ public class Node {
                         children.add(child);
                     }
                 }
+                if(model.getCPieces().size() < OriginalPositions.size()) {
+                    while (model.getCPieces().size() < OriginalPositions.size()){
+                        model.RestorePiece();
+                    }
+                }
+
+                for(int i = 0; i < OriginalPositions.size(); i++){
+                    c_pieces.get(i).setPosition(OriginalPositions.get(i));
+                }
             }
         }
         Log.d("expandCoin currentlevel", Integer.toString(currentLevel));
@@ -165,6 +189,19 @@ public class Node {
     public ArrayList<Node> expandGuerilla(int maxLevel, int currentLevel){
         Log.d("guerilla", "expanded");
         ArrayList<Point> potmoves = model.getPotentialGuerillaMoves();
+        ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+
+
+        for (BoardModel.Piece p: model.getCPieces()){
+            int x = 0;
+            int y = 0;
+
+
+            x += p.getPosition().x;
+            y += p.getPosition().y;
+
+            OriginalPositions.add(new Point(x,y));
+        }
 
         for(Point point: potmoves){
             checkDepthReached();
@@ -189,6 +226,16 @@ public class Node {
             Log.d("Gp currentlevel", Integer.toString(currentLevel));
             Log.d("Gp currentscore", Float.toString(reward));
             Log.d("Gpp amount of pieces", Integer.toString(model.getNumGuerillaPieces()));
+
+            if(model.getCPieces().size() < OriginalPositions.size()) {
+                while (model.getCPieces().size() < OriginalPositions.size()){
+                    model.RestorePiece();
+                }
+            }
+
+            for(int i = 0; i < OriginalPositions.size(); i++){
+                c_pieces.get(i).setPosition(OriginalPositions.get(i));
+            }
 
         }
         expanded = true;

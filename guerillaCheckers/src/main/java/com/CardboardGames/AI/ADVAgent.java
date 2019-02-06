@@ -5,11 +5,12 @@ import android.app.Application;
 import android.graphics.Point;
 import android.util.Log;
 import com.CardboardGames.Controllers.GameController;
-import com.CardboardGames.GuerillaCheckers.Core.Piece;
 import com.CardboardGames.Models.BoardModel;
+import com.CardboardGames.Models.BoardModel.Piece;
 import com.CardboardGames.Views.BoardView;
 import com.CardboardGames.DataStructures.BinarySort;
 
+import java.lang.reflect.Array;
 import java.util.BitSet;
 import java.util.Random;
 
@@ -138,26 +139,64 @@ public class ADVAgent {
 
     private Point coinDecision(){
         Point decision = null;
-        BoardModel.Piece selectedPiece = null;
-        ArrayList<BoardModel.Piece> potPieces = model.getCPieces();
-        ArrayList<Point> potMoves = null;
 
-        Random rand = new Random();
-        for(BoardModel.Piece piece: potPieces) {
-            selectedPiece = piece;
-            potMoves = view.getCoinPotentialMoves(selectedPiece);
-            for(Point point: potMoves){
+        ArrayList<Point> potMoves = null;model.getPotentialGuerillaMoves();
+        ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+        ArrayList<Node >firstLevel = new ArrayList<Node>();
+        ArrayList<Point> Selectedpieces = new ArrayList<Point>();
 
-            }
+        for (BoardModel.Piece p: model.getCPieces()){
+            int x = 0;
+            int y = 0;
+
+
+            x += p.getPosition().x;
+            y += p.getPosition().y;
+
+            OriginalPositions.add(new Point(x,y));
         }
-        int moveIndex = rand.nextInt(potMoves.size());
 
-        model.setSelectedCoinPiece(selectedPiece);
+        ArrayList<Array> moves = new ArrayList<Array>();
 
-        potMoves = view.getCoinPotentialMoves(selectedPiece);
+        int counter = 0;
 
-        decision = potMoves.get(moveIndex);
-        Log.d("Agent", "coinDecision: " + decision);
+        for(Piece piece: model.getCPieces()){
+            for(Point point: model.getCoinPotentialMoves(piece)){
+                Node newNode = new Node(model, point, null, ' ', agentPlayer);
+                Selectedpieces.add(OriginalPositions.get(counter));
+                newNode.setState('c');
+                newNode.makeCMove(piece);
+                newNode.Expand(maxDepth, 0);
+
+                firstLevel.add(newNode);
+
+
+                while(model.getCPieces().size() < OriginalPositions.size()){
+                    model.RestorePiece();
+                }
+
+                for (int i = 0; i < OriginalPositions.size(); i++){
+                    model.getCPieces().get(i).setPosition(OriginalPositions.get(i));
+                }
+            }
+
+            counter ++;
+        }
+        Node max = firstLevel.get(0);
+        int maxIterator = 0;
+        counter = 0;
+        for(Node n: firstLevel){
+            if (n.getReward() > max.getReward()){
+                max = n;
+                maxIterator = 0;
+                maxIterator += counter;
+            }
+            counter ++;
+        }
+
+        model.selectCoinPieceAt(Selectedpieces.get(maxIterator));
+
+        decision = max.getChoice();
 
         return decision;
     }
@@ -165,6 +204,19 @@ public class ADVAgent {
     private Point treeSearch()
     {
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
+        ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+
+        for (BoardModel.Piece p: model.getCPieces()){
+            int x = 0;
+            int y = 0;
+
+
+            x += p.getPosition().x;
+            y += p.getPosition().y;
+
+            OriginalPositions.add(new Point(x,y));
+        }
+
         Log.d("treeSearch", "init");
         BinarySort firstLevel = new BinarySort();
         int nodesChecked = 0;
@@ -177,6 +229,7 @@ public class ADVAgent {
             Node newNode = new Node(model, p, null, ' ', agentPlayer);
             newNode.setState('g');
             newNode.makeGMove();
+            Log.d("MainModel", Integer.toString(model.getNumGuerillaPieces()));
             Log.d("agent", "model mem " + model.toString());
             Log.d("agent", "view model mem " + view.getModelString());
 
@@ -214,6 +267,11 @@ public class ADVAgent {
         }
         Log.d("treeSearch", "Nodes expanded: " + nodesExpanded);
         Log.d("treeSearch", "Nodes checked " + nodesChecked);
+
+
+        for(int i = 0; i < OriginalPositions.size(); i++){
+            c_pieces.get(i).setPosition(OriginalPositions.get(i));
+        }
         if(maxNode != null) {
             return maxNode.getChoice();
         }else{

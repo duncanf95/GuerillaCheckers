@@ -98,6 +98,7 @@ public class GameController
 			m_model.setCurrentPlayer(BoardModel.Player.GUERILLA_PLAYER);
 			m_view.invalidate();
 			if(playerSelection == 'c') {
+
 				agent.makeMove();
 				agent.makeMove();
 				m_state = GameState.GUERILLA_MOVE_SECOND;
@@ -137,6 +138,7 @@ public class GameController
 	public void addTouch(float viewx, float viewy) {
 		Log.d("current state", m_state.toString());
 		char playerSelection = m_model.getPlayer();
+
 		switch (m_state) {
 		case GUERILLA_SETUP_FIRST:
 			Log.d("debug", "addTouch: gs1");
@@ -185,6 +187,7 @@ public class GameController
 			moveToNextState();
 			break;
 		}
+
 	}
 
 	public void setupGuerilla(){

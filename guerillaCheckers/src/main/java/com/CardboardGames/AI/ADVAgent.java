@@ -176,6 +176,10 @@ public class ADVAgent {
             Log.d("treeSearch", "potential move");
             Node newNode = new Node(model, p, null, ' ', agentPlayer);
             newNode.setState('g');
+            newNode.makeGMove();
+            Log.d("agent", "model mem " + model.toString());
+            Log.d("agent", "view model mem " + view.getModelString());
+
             firstLevel.push(newNode);
             counter += 1;
 

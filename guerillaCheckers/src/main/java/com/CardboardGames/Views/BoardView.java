@@ -371,6 +371,10 @@ public class BoardView extends View
 		}
 	}
 
+	public String getModelString(){
+		return m_model.toString();
+	}
+
 	/// PRIVATE MEMBERS
 
 	private final Paint m_paint = new Paint();

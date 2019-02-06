@@ -8,7 +8,7 @@ import android.graphics.Point;
 import android.util.Log;
 import com.CardboardGames.AI.ADVAgent;
 
-public class BoardModel {
+public class BoardModel implements Cloneable {
 
 	/// PUBLIC METHODS
 
@@ -214,8 +214,11 @@ public class BoardModel {
 		--m_numGuerillaPiecesLeft;
 
 		m_gameStarted = true;
-		if (m_firstGuerillaPiece == null)
+		if (m_firstGuerillaPiece == null) {
+			Log.d("gpp", "piece places");
+			Log.d("Gpp amount of left", Integer.toString(m_numGuerillaPiecesLeft));
 			m_firstGuerillaPiece = piece;
+		}
 		else
 			m_firstGuerillaPiece = null;
 	}
@@ -270,7 +273,7 @@ public class BoardModel {
 
 	public boolean captureGuerillaPiece(Point coin_from, Point coin_to) {
 		Log.d("Logic", "captureGuerillaPiece");
-		agent.debugInfo();
+		//agent.debugInfo();
 		return doCaptureGuerillaPiece(coin_from, coin_to, true);
 	}
 

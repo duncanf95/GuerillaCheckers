@@ -79,18 +79,17 @@ public class Node {
         choice = p;
         try {
             model = (BoardModel) in_model.clone();
+            Log.d("clone success", " node");
+            Log.d("model in mem", in_model.toString());
+            Log.d("model out mem", model.toString());
+
         }catch(Exception e){
-            Log.d("", "Node: " + e);
+            Log.d("failed clon", "Node: " + e);
         }
         if(parent != null) {
 
             moveType = in_moveType;
             checkScore();
-        }
-        if(p != null) {
-            model.placeGuerillaPiece(p);
-        }else {
-            Log.d("Gpp", " null move");
         }
         if(model.getGPieces() != null) g_pieces = model.getGPieces();
         Point pos = null;
@@ -139,6 +138,7 @@ public class Node {
                 Log.d("Coin","current state " + state.toString());
                 Node child = new Node(model, point, this, 'c', agentType);
                 child.setStateExpand(state);
+                child.makeCMove(p);
                 child.moveToNextState();
                 if(state.toString() != Character.toString(agentType)){
                     if (child.getReward() <= reward  || !depthReached){
@@ -157,6 +157,7 @@ public class Node {
         }
         Log.d("expandCoin currentlevel", Integer.toString(currentLevel));
         Log.d("expandCoin currentscore", Float.toString(reward));
+        Log.d("Cpp amount of pieces", Integer.toString(model.getNumCoinPieces()));
         expanded = true;
         return children;
     }
@@ -169,6 +170,7 @@ public class Node {
             checkDepthReached();
             Node child = new Node(model, point, this, 'g', agentType);
             child.setStateExpand(state);
+            child.makeGMove();
             child.moveToNextState();
             Log.d("Guerilla","current state " + state.toString());
             if(state.toString() != Character.toString(agentType)){
@@ -350,6 +352,20 @@ public class Node {
         depthReached = d;
         if (parent!=null) {
             parent.setDepthReached(d);
+        }
+    }
+
+    public void makeGMove(){
+        if(choice != null){
+            model.placeGuerillaPiece(choice);
+        }
+    }
+
+    public void makeCMove(BoardModel.Piece p){
+        model.selectCoinPieceAt(p.getPosition());
+
+        if(choice != null){
+            model.moveSelectedCoinPiece(choice);
         }
     }
 

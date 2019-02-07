@@ -133,7 +133,12 @@ public class ADVAgent {
     }
 
     private void placePieceCoin(){
-        Point decision = coinDecision();
+        Point decision = null;
+        if(model.lastCoinMoveCaptured()){
+            decision=coinCaptureDecision();
+        }else {
+            decision=coinDecision();
+        }
         model.moveSelectedCoinPiece(decision);
     }
 
@@ -198,6 +203,52 @@ public class ADVAgent {
 
         decision = max.getChoice();
 
+        return decision;
+    }
+
+    public Point coinCaptureDecision(){
+        Point decision = null;
+        ArrayList<Point> potMoves = model.getCoinPotentialMoves(model.getSelectedCoinPiece());
+        ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+        ArrayList<Node>firstLevel = new ArrayList<Node>();
+
+        for (BoardModel.Piece p: model.getCPieces()){
+            int x = 0;
+            int y = 0;
+
+
+            x += p.getPosition().x;
+            y += p.getPosition().y;
+
+            OriginalPositions.add(new Point(x,y));
+        }
+
+        for (Point p: potMoves){
+            Node newNode = new Node(model, p, null, ' ', agentPlayer);
+            newNode.setState('c');
+            newNode.makeCMove(model.getSelectedCoinPiece());
+            newNode.Expand(maxDepth,0);
+
+            firstLevel.add(newNode);
+
+            while(model.getCPieces().size() < OriginalPositions.size()){
+                model.RestorePiece();
+            }
+
+            for (int i = 0; i < OriginalPositions.size(); i++){
+                model.getCPieces().get(i).setPosition(OriginalPositions.get(i));
+            }
+        }
+
+        Node maxNode = firstLevel.get(0);
+
+        for(Node n: firstLevel){
+            if(n.getReward() > maxNode.getReward()){
+                maxNode = n;
+            }
+        }
+
+        decision = maxNode.getChoice();
         return decision;
     }
 

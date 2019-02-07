@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Feb 06 12:29:28 GMT 2019
+#Thu Feb 07 11:32:29 GMT 2019
 0.baseType=DIRECTORY
 0.base=/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/transforms/dexMerger/debug/0
 0.path=classes.dex

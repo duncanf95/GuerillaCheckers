@@ -74,6 +74,17 @@ public class GameController
 
 			if(playerSelection == 'g'){
 				agent.makeMove();
+				if(m_model.lastCoinMoveCaptured()){
+					m_model.setCoinMustCapture(true);
+					if (m_model.selectedCoinPieceHasValidMoves()) {
+						while(m_model.lastCoinMoveCaptured()){
+							Log.d("coinmove", "found take");
+							agent.makeMove();
+						}
+					}else{
+						m_model.setCoinMustCapture(false);
+					}
+				}
 				m_state = GameState.COIN_CAPTURE;
 				moveToNextState();
 			}else{
@@ -120,6 +131,17 @@ public class GameController
 			m_view.invalidate();
 			if(playerSelection == 'g'){
 				agent.makeMove();
+				if(m_model.lastCoinMoveCaptured()){
+					m_model.setCoinMustCapture(true);
+					if (m_model.selectedCoinPieceHasValidMoves()) {
+						while(m_model.lastCoinMoveCaptured()){
+							Log.d("coinmove", "found take");
+							agent.makeMove();
+						}
+					}else{
+						m_model.setCoinMustCapture(false);
+					}
+				}
 				m_state = GameState.COIN_CAPTURE;
 				moveToNextState();
 			}else{

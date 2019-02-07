@@ -79,7 +79,12 @@ public class GameController
 					if (m_model.selectedCoinPieceHasValidMoves()) {
 						while(m_model.lastCoinMoveCaptured()){
 							Log.d("coinmove", "found take");
-							agent.makeMove();
+							if(m_model.getCoinPotentialMoves(m_model.getSelectedCoinPiece()).size() > 0){
+								agent.makeMove();
+							}else{
+								m_model.setCoinMustCapture(false);
+							}
+
 						}
 					}else{
 						m_model.setCoinMustCapture(false);
@@ -136,7 +141,11 @@ public class GameController
 					if (m_model.selectedCoinPieceHasValidMoves()) {
 						while(m_model.lastCoinMoveCaptured()){
 							Log.d("coinmove", "found take");
-							agent.makeMove();
+							if(m_model.getCoinPotentialMoves(m_model.getSelectedCoinPiece()).size() > 0){
+								agent.makeMove();
+							}else{
+								m_model.setCoinMustCapture(false);
+							}
 						}
 					}else{
 						m_model.setCoinMustCapture(false);

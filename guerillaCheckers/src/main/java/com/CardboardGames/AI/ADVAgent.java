@@ -24,7 +24,7 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
-    private int maxDepth = 10;
+    private int maxDepth = 20;
 
 
 
@@ -167,7 +167,7 @@ public class ADVAgent {
 
         for(Piece piece: model.getCPieces()){
             for(Point point: model.getCoinPotentialMoves(piece)){
-                Node newNode = new Node(model, point, null, ' ', agentPlayer);
+                Node newNode = new Node(model, point, null, ' ', agentPlayer, new ArrayList<Point>());
                 Selectedpieces.add(OriginalPositions.get(counter));
                 newNode.setState('c');
                 newNode.makeCMove(piece);
@@ -223,8 +223,10 @@ public class ADVAgent {
             OriginalPositions.add(new Point(x,y));
         }
 
+
+
         for (Point p: potMoves){
-            Node newNode = new Node(model, p, null, ' ', agentPlayer);
+            Node newNode = new Node(model, p, null, ' ', agentPlayer, new ArrayList<Point>());
             newNode.setState('c');
             newNode.makeCMove(model.getSelectedCoinPiece());
             newNode.Expand(maxDepth,0);
@@ -272,12 +274,16 @@ public class ADVAgent {
         BinarySort firstLevel = new BinarySort();
         int nodesChecked = 0;
         int nodesExpanded = 0;
+        ArrayList<Point> piecePoints = new ArrayList<Point>();
 
         Log.d("treeSearch", "entering potential moves");
         int counter = 0;
+        for(Piece p: model.getGPieces()){
+            piecePoints.add(p.getPosition());
+        }
         for (Point p: potMoves){
             Log.d("treeSearch", "potential move");
-            Node newNode = new Node(model, p, null, ' ', agentPlayer);
+            Node newNode = new Node(model, p, null, ' ', agentPlayer, piecePoints);
             newNode.setState('g');
             newNode.makeGMove();
             Log.d("MainModel", Integer.toString(model.getNumGuerillaPieces()));

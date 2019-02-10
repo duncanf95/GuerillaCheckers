@@ -21,6 +21,7 @@ public class Node {
     private char moveType;
     private char agentType;
     private Point choice = null;
+    private ArrayList<Point> gPoints = null;
     private boolean depthReached = false;
 
     private enum GameState {
@@ -70,10 +71,10 @@ public class Node {
 
     private GameState state;
 
-    public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType){
+    public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType, ArrayList<Point> in_gPoints){
         model = new BoardModel(null);
         parent = in_parent;
-        reward = rand.nextInt(10000);
+        reward = rand.nextInt(700);
         agentType = in_agentType;
         initialReward += reward;
         choice = p;
@@ -82,6 +83,8 @@ public class Node {
             Log.d("clone success", " node");
             Log.d("model in mem", in_model.toString());
             Log.d("model out mem", model.toString());
+
+            gPoints = (ArrayList<Point>)in_gPoints.clone();
 
         }catch(Exception e){
             Log.d("failed clon", "Node: " + e);
@@ -151,7 +154,7 @@ public class Node {
             for (Point point : potmoves) {
                 Log.d("Coin", "found moves");
                 Log.d("Coin","current state " + state.toString());
-                Node child = new Node(model, point, this, 'c', agentType);
+                Node child = new Node(model, point, this, 'c', agentType, gPoints);
                 child.setStateExpand(state);
                 child.makeCMove(p);
                 child.moveToNextState();
@@ -205,7 +208,7 @@ public class Node {
 
         for(Point point: potmoves){
             checkDepthReached();
-            Node child = new Node(model, point, this, 'g', agentType);
+            Node child = new Node(model, point, this, 'g', agentType, gPoints);
             child.setStateExpand(state);
             child.makeGMove();
             child.moveToNextState();
@@ -404,7 +407,24 @@ public class Node {
 
     public void makeGMove(){
         if(choice != null){
+            int beforeMove = 0;
+            int afterMove = 0;
+            boolean take = false;
+            beforeMove += model.getNumCoinPieces();
             model.placeGuerillaPiece(choice);
+            afterMove += model.getNumCoinPieces();
+            gPoints.add(choice);
+
+            BoardAnalyser BA = new BoardAnalyser();
+            float result;
+
+            if(beforeMove > afterMove){
+                take = true;
+            }
+
+            result = BA.gAnalyse(gPoints, choice, take);
+            reward = result;
+            Log.d("makeGMove", "score is " + result);
         }
     }
 

@@ -138,18 +138,32 @@ public class GameController
 				agent.makeMove();
 				if(m_model.lastCoinMoveCaptured()){
 					m_model.setCoinMustCapture(true);
-					if (m_model.selectedCoinPieceHasValidMoves()) {
+
+					while(m_model.getCoinMustCapture()){
+						Log.d("GAME_TAKE", "found take");
+
+						agent.coinTake();
+
+						if(!(m_model.selectedCoinPieceHasValidMoves())){
+							m_model.setCoinMustCapture(false);
+						}
+					}
+					/*if (m_model.selectedCoinPieceHasValidMoves()) {
 						while(m_model.lastCoinMoveCaptured()){
 							Log.d("coinmove", "found take");
-							if(m_model.getCoinPotentialMoves(m_model.getSelectedCoinPiece()).size() > 0){
-								agent.makeMove();
-							}else{
+
+							agent.coinTake();
+
+							if(!(m_model.selectedCoinPieceHasValidMoves())){
 								m_model.setCoinMustCapture(false);
 							}
+
+
+
 						}
 					}else{
 						m_model.setCoinMustCapture(false);
-					}
+					}*/
 				}
 				m_state = GameState.COIN_CAPTURE;
 				moveToNextState();

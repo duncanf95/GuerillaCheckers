@@ -334,6 +334,14 @@ public class ADVAgent {
         }
     }
 
+    public void coinTake(){
+        for(Point p: model.getCoinPotentialMoves(model.getSelectedCoinPiece())) {
+            if(model.selectedCoinPieceHasValidMoves()) {
+                model.moveSelectedCoinPiece(p);
+            }
+        }
+    }
+
 
 
 

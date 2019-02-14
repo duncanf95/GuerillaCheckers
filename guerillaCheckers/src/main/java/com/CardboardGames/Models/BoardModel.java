@@ -483,6 +483,10 @@ public class BoardModel implements Cloneable {
 		m_coinPieces.add(new Piece(new Point(0,0)));
 	}
 
+	public boolean getCoinMustCapture(){
+		return m_coinMustCapture;
+	}
+
 
 	public char getPlayer(){ return playerSelection; }
 

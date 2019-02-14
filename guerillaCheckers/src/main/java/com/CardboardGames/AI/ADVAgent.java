@@ -24,7 +24,7 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
-    private int maxDepth = 20;
+    private int maxDepth = 15;
 
 
 
@@ -295,11 +295,17 @@ public class ADVAgent {
 
         }
         Log.d("treeSearch", "selecting node");
-
+        Node maxNode = null;
+        if(firstLevel.GetSort().size() > 0) {
+            maxNode = firstLevel.GetSort().get(0);
+        }
         if(firstLevel.GetSort().size() != 0){
         //Node currentNode = firstLevel.GetSort().get(firstLevel.GetSort().size() - 1);
         for (Node n: firstLevel.GetSort()){
-            n.Expand(maxDepth,0);
+            if(n.getReward() >= maxNode.getReward()){
+                n.Expand(maxDepth,0);
+                maxNode = n;
+            }
         }
 
 
@@ -308,17 +314,9 @@ public class ADVAgent {
 
 
         float max = 0;
-        Node maxNode = null;
-        Log.d("treeSearch, choice size", Integer.toString(firstLevel.GetSort().size()));
-        for(Node n: firstLevel.GetSort()){
-            Log.d("treeSearch", "selecting choice");
-            if (n.getReward() > max){
-                if(n.getChoice() != null) {
-                    maxNode = n;
-                }
-            }
 
-        }
+        Log.d("treeSearch, choice size", Integer.toString(firstLevel.GetSort().size()));
+
         if(maxNode != null) {
             Log.d("treeSearch, choice", maxNode.getChoice().toString());
         }

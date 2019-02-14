@@ -156,16 +156,23 @@ public class Node {
                 Log.d("Coin","current state " + state.toString());
                 Node child = new Node(model, point, this, 'c', agentType, gPoints);
                 child.setStateExpand(state);
+
                 child.makeCMove(p);
                 child.moveToNextState();
+                if(child.getState() == "END"){
+                    Log.d("END", "Break");
+                    break;
+                }
                 if(state.toString() != Character.toString(agentType)){
-                    if (child.getReward() <= reward  || !depthReached){
+                    if ((child.getReward() <= reward  || !depthReached) &&
+                            !(state == GameState.END_GAME)){
                         Log.d("Coin","expanding child");
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
                     }
                 }else if(state.toString() == Character.toString(agentType) ){
-                    if (child.getReward() >= reward || !depthReached){
+                    if ((child.getReward() >= reward || !depthReached) &&
+                            !(state == GameState.END_GAME)){
                         Log.d("Coin","expanding child");
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
@@ -212,15 +219,21 @@ public class Node {
             child.setStateExpand(state);
             child.makeGMove();
             child.moveToNextState();
+            if(child.getState() == "END"){
+                Log.d("END", "Break");
+                break;
+            }
             Log.d("Guerilla","current state " + state.toString());
             if(state.toString() != Character.toString(agentType)){
-                if (child.getReward() <= reward  || !depthReached){
+                if ((child.getReward() <= reward  || !depthReached) &&
+                        !(state == GameState.END_GAME)){
                     Log.d("Guerilla","expanding child");
                     child.Expand(maxLevel, currentLevel + 1);
                     children.add(child);
                 }
             }else if(state.toString() == Character.toString(agentType) ){
-                if (child.getReward() >= reward || !depthReached){
+                if ((child.getReward() >= reward || !depthReached) &&
+                        !(state == GameState.END_GAME)){
                     Log.d("Guerilla","expanding child");
                     child.Expand(maxLevel, currentLevel + 1);
                     children.add(child);
@@ -319,6 +332,7 @@ public class Node {
         Log.d("moveToNextState Node", "in function");
         if (state != GameState.END_GAME && model.isGameOver()) {
             state = GameState.END_GAME;
+            Log.d("CS", state.toString());
             return;
         }
 
@@ -337,6 +351,7 @@ public class Node {
                     model.setCoinMustCapture(true);
                     if (model.selectedCoinPieceHasValidMoves()) {
                         state = GameState.COIN_CAPTURE;
+                        Log.d("CS", "capture");
                         return;
                     }
                 }
@@ -358,10 +373,12 @@ public class Node {
                 state = GameState.COIN_MOVE;
                 return;
             case END_GAME:
-                model.reset();
-                state = GameState.GUERILLA_SETUP_FIRST;
+                Log.d("ENDGAME", "True");
+                //model.reset();
+                //state = GameState.GUERILLA_SETUP_FIRST;
                 break;
         }
+
     }
 
     public void setState(char choice){
@@ -407,22 +424,45 @@ public class Node {
 
     public void makeGMove(){
         if(choice != null){
-            int beforeMove = 0;
-            int afterMove = 0;
-            boolean take = false;
-            beforeMove += model.getNumCoinPieces();
+            int beforeMoveC = 0;
+            int afterMoveC = 0;
+
+            int beforeMoveG = 0;
+            int afterMoveG = 0;
+
+            int ratio = 1;
+
+            boolean takeC = false;
+            boolean takeG = false;
+            beforeMoveC += model.getNumCoinPieces();
+            beforeMoveG += model.getRemainingGuerillaPieces() + model.getGPieces().size();
             model.placeGuerillaPiece(choice);
-            afterMove += model.getNumCoinPieces();
+            afterMoveC += model.getNumCoinPieces();
+            afterMoveG += model.getRemainingGuerillaPieces() + model.getGPieces().size();
             gPoints.add(choice);
+            if((afterMoveG > 0)&&(afterMoveC > 0)){
+                ratio = afterMoveG / afterMoveC;
+            }
+
 
             BoardAnalyser BA = new BoardAnalyser();
             float result;
 
-            if(beforeMove > afterMove){
-                take = true;
+            if(beforeMoveC > afterMoveC){
+                takeC = true;
             }
 
-            result = BA.gAnalyse(gPoints, choice, take);
+            if(beforeMoveG > afterMoveG){
+                takeG = true;
+            }
+            if(agentType == 'g'){
+
+                result = BA.gAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio);
+
+            }else{
+                result = BA.cAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio);
+            }
+
             reward = result;
             Log.d("makeGMove", "score is " + result);
         }
@@ -432,7 +472,48 @@ public class Node {
         model.selectCoinPieceAt(p.getPosition());
 
         if(choice != null){
+            int beforeMoveC = 0;
+            int afterMoveC = 0;
+
+            int beforeMoveG = 0;
+            int afterMoveG = 0;
+
+            int ratio = 1;
+
+            boolean takeC = false;
+            boolean takeG = false;
+            beforeMoveC += model.getNumCoinPieces();
+            beforeMoveG += model.getRemainingGuerillaPieces() + model.getGPieces().size();
             model.moveSelectedCoinPiece(choice);
+            afterMoveC += model.getNumCoinPieces();
+            afterMoveG += model.getRemainingGuerillaPieces() + model.getGPieces().size();
+            gPoints.add(choice);
+            if((afterMoveG > 0)&&(afterMoveC > 0)){
+                ratio = afterMoveG / afterMoveC;
+            }
+
+
+            BoardAnalyser BA = new BoardAnalyser();
+            float result;
+
+            if(beforeMoveC > afterMoveC){
+                takeC = true;
+            }
+
+            if(beforeMoveG > afterMoveG){
+                takeG = true;
+            }
+
+            if(agentType == 'g'){
+
+                reward = BA.gAnalyseCoin(choice, takeC,takeG, ratio);
+
+            }else if(agentType == 'c'){
+                reward = BA.cAnalyseCoin(choice, takeC,takeG, ratio);
+            }
+            //result = BA.gAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio);
+            //reward = result;
+            Log.d("makeCMove", "score is " + reward);
         }
     }
 

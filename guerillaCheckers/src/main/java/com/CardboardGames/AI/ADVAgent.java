@@ -164,16 +164,19 @@ public class ADVAgent {
         ArrayList<Array> moves = new ArrayList<Array>();
 
         int counter = 0;
-
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
         for(Piece piece: model.getCPieces()){
             for(Point point: model.getCoinPotentialMoves(piece)){
-                Node newNode = new Node(model, point, null, ' ', agentPlayer, new ArrayList<Point>());
+                Node newNode = new Node(model, point, null, ' ', agentPlayer, new ArrayList<Point>(),startTime);
                 Selectedpieces.add(OriginalPositions.get(counter));
                 newNode.setState('c');
                 newNode.makeCMove(piece);
                 newNode.Expand(maxDepth, 0);
 
                 firstLevel.add(newNode);
+
+
 
 
                 while(model.getCPieces().size() < OriginalPositions.size()){
@@ -195,6 +198,10 @@ public class ADVAgent {
                 max = n;
                 maxIterator = 0;
                 maxIterator += counter;
+                elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+                if(elapsedTime > 5){
+                    break;
+                }
             }
             counter ++;
         }
@@ -224,9 +231,9 @@ public class ADVAgent {
         }
 
 
-
+        long startTime = System.currentTimeMillis();
         for (Point p: potMoves){
-            Node newNode = new Node(model, p, null, ' ', agentPlayer, new ArrayList<Point>());
+            Node newNode = new Node(model, p, null, ' ', agentPlayer, new ArrayList<Point>(), startTime);
             newNode.setState('c');
             newNode.makeCMove(model.getSelectedCoinPiece());
             newNode.Expand(maxDepth,0);
@@ -281,9 +288,10 @@ public class ADVAgent {
         for(Piece p: model.getGPieces()){
             piecePoints.add(p.getPosition());
         }
+        long startTime = System.currentTimeMillis();
         for (Point p: potMoves){
             Log.d("treeSearch", "potential move");
-            Node newNode = new Node(model, p, null, ' ', agentPlayer, piecePoints);
+            Node newNode = new Node(model, p, null, ' ', agentPlayer, piecePoints, startTime);
             newNode.setState('g');
             newNode.makeGMove();
             Log.d("MainModel", Integer.toString(model.getNumGuerillaPieces()));
@@ -299,13 +307,25 @@ public class ADVAgent {
         if(firstLevel.GetSort().size() > 0) {
             maxNode = firstLevel.GetSort().get(0);
         }
+
+        long elapsedTime = 0;
+
         if(firstLevel.GetSort().size() != 0){
         //Node currentNode = firstLevel.GetSort().get(firstLevel.GetSort().size() - 1);
         for (Node n: firstLevel.GetSort()){
             if(n.getReward() >= maxNode.getReward()){
                 n.Expand(maxDepth,0);
                 maxNode = n;
+
+
             }
+            elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+
+            if(elapsedTime > 5){
+                break;
+            }
+
+            Log.d("TIME", Long.toString((elapsedTime / 1000)%60));
         }
 
 

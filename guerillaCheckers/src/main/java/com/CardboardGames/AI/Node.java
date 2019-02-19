@@ -24,6 +24,8 @@ public class Node {
     private ArrayList<Point> gPoints = null;
     private boolean depthReached = false;
     private boolean choiceMade;
+    private long startTime;
+    private long elapsedTime;
 
     private enum GameState {
         GUERILLA_SETUP_FIRST{
@@ -72,13 +74,15 @@ public class Node {
 
     private GameState state;
 
-    public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType, ArrayList<Point> in_gPoints){
+    public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType, ArrayList<Point> in_gPoints, long in_startTime){
         model = new BoardModel(null);
         parent = in_parent;
         reward = rand.nextInt(700);
         agentType = in_agentType;
         initialReward += reward;
         choice = p;
+        startTime = in_startTime;
+        elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
         try {
             model = in_model.clone();
             Log.d("clone success", " node");
@@ -157,7 +161,7 @@ public class Node {
             for (Point point : potmoves) {
                 Log.d("Coin", "found moves");
                 Log.d("Coin","current state " + state.toString());
-                Node child = new Node(model, point, this, 'c', agentType, gPoints);
+                Node child = new Node(model, point, this, 'c', agentType, gPoints, startTime);
                 child.setStateExpand(state);
 
                 child.makeCMove(p);
@@ -173,6 +177,11 @@ public class Node {
                         if(depthReached) child.setDepthReached(true);
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
+                        elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+                        if(elapsedTime >= 5){
+                            break;
+                        }
+                        Log.d("TIME", Long.toString(elapsedTime));
                     }
                 }else if(state.toString() == Character.toString(agentType) ){
                     if ((child.getReward() >= reward || !depthReached) &&
@@ -181,6 +190,11 @@ public class Node {
                         if(depthReached) child.setDepthReached(true);
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
+                        elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+                        if(elapsedTime >= 5){
+                            break;
+                        }
+                        Log.d("TIME", Long.toString(elapsedTime));
                     }
                 }
                 if(model.getCPieces().size() < OriginalPositions.size()) {
@@ -192,6 +206,10 @@ public class Node {
                 for(int i = 0; i < OriginalPositions.size(); i++){
                     c_pieces.get(i).setPosition(OriginalPositions.get(i));
                 }
+            }
+
+            if(elapsedTime >= 5){
+                break;
             }
         }
         Log.d("expandCoin currentlevel", Integer.toString(currentLevel));
@@ -220,7 +238,7 @@ public class Node {
 
         for(Point point: potmoves){
             checkDepthReached();
-            Node child = new Node(model, point, this, 'g', agentType, gPoints);
+            Node child = new Node(model, point, this, 'g', agentType, gPoints, startTime);
             child.setStateExpand(state);
             child.makeGMove();
             child.moveToNextState();
@@ -236,6 +254,10 @@ public class Node {
                     if(depthReached) child.setDepthReached(true);
                     child.Expand(maxLevel, currentLevel + 1);
                     children.add(child);
+                    elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+                    if(elapsedTime >= 5){
+                        break;
+                    }
                 }
             }else if(state.toString() == Character.toString(agentType) ){
                 if ((child.getReward() >= reward || !depthReached) &&
@@ -244,6 +266,10 @@ public class Node {
                     if(depthReached) child.setDepthReached(true);
                     child.Expand(maxLevel, currentLevel + 1);
                     children.add(child);
+                    elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+                    if(elapsedTime >= 5){
+                        break;
+                    }
                 }
             }
             Log.d("Gp currentlevel", Integer.toString(currentLevel));

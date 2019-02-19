@@ -199,7 +199,7 @@ public class ADVAgent {
                 maxIterator = 0;
                 maxIterator += counter;
                 elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
-                if(elapsedTime > 5){
+                if(elapsedTime >= 5){
                     break;
                 }
             }
@@ -321,7 +321,7 @@ public class ADVAgent {
             }
             elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
 
-            if(elapsedTime > 5){
+            if(elapsedTime >= 5){
                 break;
             }
 

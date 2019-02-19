@@ -23,6 +23,7 @@ public class Node {
     private Point choice = null;
     private ArrayList<Point> gPoints = null;
     private boolean depthReached = false;
+    private boolean choiceMade;
 
     private enum GameState {
         GUERILLA_SETUP_FIRST{
@@ -92,7 +93,9 @@ public class Node {
         if(parent != null) {
 
             moveType = in_moveType;
-            checkScore();
+            if(parent.getDepthReached()) {
+                checkScore();
+            }
         }
         if(model.getGPieces() != null) g_pieces = model.getGPieces();
         if(model.getCPieces() != null) c_pieces = model.getCPieces();
@@ -167,6 +170,7 @@ public class Node {
                     if ((child.getReward() <= reward  || !depthReached) &&
                             !(state == GameState.END_GAME)){
                         Log.d("Coin","expanding child");
+                        if(depthReached) child.setDepthReached(true);
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
                     }
@@ -174,6 +178,7 @@ public class Node {
                     if ((child.getReward() >= reward || !depthReached) &&
                             !(state == GameState.END_GAME)){
                         Log.d("Coin","expanding child");
+                        if(depthReached) child.setDepthReached(true);
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
                     }
@@ -228,6 +233,7 @@ public class Node {
                 if ((child.getReward() <= reward  || !depthReached) &&
                         !(state == GameState.END_GAME)){
                     Log.d("Guerilla","expanding child");
+                    if(depthReached) child.setDepthReached(true);
                     child.Expand(maxLevel, currentLevel + 1);
                     children.add(child);
                 }
@@ -235,6 +241,7 @@ public class Node {
                 if ((child.getReward() >= reward || !depthReached) &&
                         !(state == GameState.END_GAME)){
                     Log.d("Guerilla","expanding child");
+                    if(depthReached) child.setDepthReached(true);
                     child.Expand(maxLevel, currentLevel + 1);
                     children.add(child);
                 }
@@ -313,14 +320,16 @@ public class Node {
         if(parent != null){
             if(parent.getState() == Character.toString(agentType)) {
 
-                if (reward > parent.getReward()) {
+                if (reward > parent.getReward() || !choiceMade) {
                     Log.d("checkScore", "changed");
+                    choiceMade = true;
                     parent.setReward(reward);
                     parent.checkScore();
                 }
             }else{
-                if (reward < parent.getReward()) {
+                if (reward < parent.getReward() || !choiceMade) {
                     Log.d("checkScore", "changed");
+                    choiceMade = true;
                     parent.setReward(reward);
                     parent.checkScore();
                 }
@@ -418,7 +427,9 @@ public class Node {
     public void setDepthReached(boolean d){
         depthReached = d;
         if (parent!=null) {
-            parent.setDepthReached(d);
+            if(!parent.getDepthReached()) {
+                parent.setDepthReached(d);
+            }
         }
     }
 

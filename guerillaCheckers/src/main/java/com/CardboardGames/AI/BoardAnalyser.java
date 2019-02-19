@@ -214,7 +214,7 @@ public class BoardAnalyser {
 
                 if(changeX.x > 0){
                     if(in_gPoints.contains(changeX)){
-                        result = 179;
+                        result += 179;
                     }
                 }
 
@@ -275,11 +275,12 @@ public class BoardAnalyser {
                 average = (differenceX + differenceY)/2;
             }
         }
+        Log.d("cAnalyseG: ", Float.toString((result * pieceRatio) * average));
         return (result * pieceRatio) * average;
     }
 
     public float cAnalyseCoin(Point choice, boolean cTake, boolean gTake, int ratio){
-        float result = 4000;
+        float result = 7000;
         Random rand = new Random();
 
         int average = 1;
@@ -288,18 +289,18 @@ public class BoardAnalyser {
 
         int distance = 0;
         if(choice .y < 3){
-            result -= (3 - choice.y) * 50;
+            result -= (3 - choice.y) * 190;
             differenceY = 3 - choice.y;
         }else if(choice.x < 3){
-            result -= (3 - choice.x) * 50;
+            result -= (3 - choice.x) * 190;
             differenceX = 3 - choice.x;
         }
 
         if (choice.y > 3){
-            result -= (choice.y - 3) * 50;
+            result -= (choice.y - 3) * 190;
             differenceY = choice.y - 3;
         }else if(choice.x > 3){
-            result -= (choice.x - 3) * 50;
+            result -= (choice.x - 3) * 190;
             differenceX = choice.x - 3;
         }
 
@@ -313,8 +314,8 @@ public class BoardAnalyser {
 
 
         //result = rand.nextInt(1000);
-
-        return (result + ((average * 219)))/ratio;
+        Log.d("cAnalyseG: ", Float.toString(((result + ((average * 219)))/ratio)));
+        return ((result)/ratio) * (average * 219);
     }
 
 }

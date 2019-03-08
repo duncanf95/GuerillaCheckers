@@ -16,6 +16,8 @@ import java.util.Random;
 
 import java.util.ArrayList;
 
+
+
 public class ADVAgent {
     private BoardModel model;
     private BoardView view;
@@ -24,10 +26,20 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
-    private int maxDepth = 15;
+    private int maxDepth = 21;
 
 
-
+    public class NodeThread extends Thread{
+        public Node node;
+        public int maxDepth;
+        public Thread t;
+        public NodeThread(){
+            t = new Thread(this, "name");
+        }
+        public void run(){
+            node.Expand(maxDepth,0);
+        }
+    }
 
     public ADVAgent(){
         //model = in_model;
@@ -265,6 +277,8 @@ public class ADVAgent {
     {
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+        ArrayList<NodeThread> threads = new ArrayList<NodeThread>();
+        ArrayList<Node> firstLevel2 = new ArrayList<Node>();
 
         for (BoardModel.Piece p: model.getCPieces()){
             int x = 0;
@@ -299,6 +313,11 @@ public class ADVAgent {
             Log.d("agent", "view model mem " + view.getModelString());
 
             firstLevel.push(newNode);
+            firstLevel2.add(newNode);
+            //threads.add(new NodeThread());
+            //threads.get(counter).maxDepth = maxDepth;
+            //threads.get(counter).node = newNode;
+            Log.d("Thread", "Created");
             counter += 1;
 
         }
@@ -312,28 +331,84 @@ public class ADVAgent {
 
         if(firstLevel.GetSort().size() != 0){
         //Node currentNode = firstLevel.GetSort().get(firstLevel.GetSort().size() - 1);
-        for (Node n: firstLevel.GetSort()){
-            if(n.getReward() >= maxNode.getReward()){
+        counter = 0;
+        /*for (Node n: firstLevel.GetSort()){
+            /*if(n.getReward() >= maxNode.getReward()){
                 n.Expand(maxDepth,0);
                 maxNode = n;
 
 
             }
+            threads.get(counter).start();
             elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
 
             if(elapsedTime >= 5){
                 break;
             }
-
+            counter += 1;
             Log.d("TIME", Long.toString((elapsedTime / 1000)%60));
-        }
+            Log.d("Thread", "started");
+        }*/
 
 
         }
+        Log.d("Thread", "Size " + Integer.toString(firstLevel2.size()));
+
+        for (int i = 0; i < 2; i++){
+            threads.add(new NodeThread());
+        }
+        counter = 0;
+        int nodeCounter = 0;
+        for (Node n: firstLevel2){
+            if(threads.get(counter).isAlive()) {
+                try {
+                    threads.get(counter).join();
+                    Log.d("Thread", "Joined");
+                } catch (Exception e) {
+                    Log.d("Exception thread", e.toString());
+                }
+            }
 
 
+            threads.set(counter, new NodeThread());
+            threads.get(counter).maxDepth = maxDepth;
+            threads.get(counter).node = n;
+            threads.get(counter).start();
+            Log.d("ThreadS", "started");
+
+            counter++;
+            if(counter >= 2){
+                counter = 0;
+            }
+            nodeCounter ++;
+        }
+        Log.d("Thread", "Nodes executed " + nodeCounter);
+        /*for(NodeThread n: threads){
+            n.start();
+            Log.d("Thread", "Start");
+        }*/
+        for(NodeThread n: threads){
+
+                try {
+                    n.join();
+
+                    Log.d("Thread", "Joined");
+                } catch (Exception e) {
+                    Log.d("Exception thread", e.toString());
+                }
+
+
+        }
 
         float max = 0;
+        for (Node n: firstLevel.GetSort()){
+            if(n.getReward() > max){
+                max = n.getReward();
+                maxNode = n;
+            }
+        }
+
+
 
         Log.d("treeSearch, choice size", Integer.toString(firstLevel.GetSort().size()));
 

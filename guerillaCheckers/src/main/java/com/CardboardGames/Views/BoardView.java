@@ -22,6 +22,7 @@ import android.view.View;
 import com.CardboardGames.R;
 import com.CardboardGames.Models.BoardModel;
 
+
 public class BoardView extends View
 {
 	/// PUBLIC METHODS
@@ -41,6 +42,14 @@ public class BoardView extends View
 		drawHUD(canvas);
 		if (m_model.isGameOver())
 			drawGameOver(canvas);
+	}
+
+	public void setM_model(BoardModel model){
+		try {
+			m_model = model.clone();
+		}catch (Exception e){
+
+		}
 	}
 
 	public Point getCoinBoardCoords(float viewx, float viewy) {

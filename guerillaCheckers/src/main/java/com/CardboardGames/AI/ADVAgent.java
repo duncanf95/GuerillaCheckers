@@ -41,6 +41,7 @@ public class ADVAgent {
     }
 
     public void setModel(BoardModel in_model){
+
         model = in_model;
         Log.d("Class load Agent", "successful");
     }

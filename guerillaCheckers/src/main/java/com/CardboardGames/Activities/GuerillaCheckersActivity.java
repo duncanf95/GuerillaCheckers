@@ -16,6 +16,10 @@ import com.CardboardGames.Controllers.GameController;
 import com.CardboardGames.Models.BoardModel;
 import com.CardboardGames.Views.BoardView;
 
+
+import java.io.FileReader;
+import java.io.InputStream;
+
 public class GuerillaCheckersActivity extends Activity
 	implements OnTouchListener
 {
@@ -53,14 +57,52 @@ public class GuerillaCheckersActivity extends Activity
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_choose_team);
 		builder.setItems(team_names, m_chooseTeamHandler);
+		builder.create();
+		return builder.show();
+	}
+
+	private Dialog buildrulesdialog() {
+
+		FileReader fr = new FileReader("res/values/rules.txt");
+		String team_names[] = getResources().getStringArray(R.array.team_names);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("hey there this changed");
+
+		builder.setItems(team_names, m_chooseTeamHandler);
+		builder.setMessage("dmzjsh\nfjdskhkj\ngfshkfhjkdshgkjhfdjg\nshfohgkdfjhgjkdfhgjkhksghfjkdkadhfkgj" +
+				"ksjhfdjdfhjdhskjfhksjdfhfakjhfjkhfkj\nahfkdhjfhasjhahfjkafjkashkashfkahjahjskhfkjsahfk" +
+				"kjfdshahkahfjkfhkahsjkfhahkjdhsakjhkahfkjafhksjadhfjksahjshakf\nhkjsahfjkdsfhjashkjhfksadfkj" +
+				"jksahfkjdsfhjahdfkjhasfkddhfkjsaskjhkashfkjashfjksjdfhkjhdsakdhfjksahfjksahfdkjsahdjkjsadhkja" +
+				"sdfjhakjfhjksadfhjkdfhkj\nasdhfjkfhhdjksa\nhfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
+				"sdfjhakjfhjksadfhjkdfhkj\nasdhfjkfhhdjksahfjksahfjkafj\nkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
+				"sdfjhakjfhjksadfhjkdfhkjasdhfjkfhhdjksahfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
+				"sdfjhakjfhjksadfhjkdfhkjasdhfjkfhhdj\nksahfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
+				"sdfjhakjfhjksadfhjkdfhkjasdh\nfjkfhhdjksahfjksahfjkaf\njkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
+				"sdfjhakjfhjksadfhjkdfhkjasdhfjkfhh\ndjksahfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
+				"sdfjhakjfhjksadfhjkdfhkjasdh\nfjkfhhdjksahfjksahfjkafjkav\nshfkdashfkjhsfkhsa\nhfdkjsahkahdfkjashdfk"
+		);
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				buildTeamChoiceDialog();
+			}
+		});
 		return builder.create();
 	}
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		if(id == 1){
+			id = 0;
+		}else{
+			id = 1;
+		}
 	    switch(id) {
 	    case DIALOG_CHOOSE_TEAM:
+			Log.d("onCreateDialog", Integer.toString(id));
 	    	return buildTeamChoiceDialog();
+		case DIALOG_EXPLAIN_RULES:
+			Log.d("onCreateDialog", Integer.toString(id));
+			return buildrulesdialog();
 	    default:
 	        return super.onCreateDialog(id);
 	    }
@@ -77,6 +119,7 @@ public class GuerillaCheckersActivity extends Activity
 					m_controller.setupGuerilla();
 					m_view.invalidate();
 					agent.makeMove();
+					m_view.invalidate();
 					agent.makeMove();
 					break;
 				case IDX_GUERILLA: // TODO: implement
@@ -89,8 +132,8 @@ public class GuerillaCheckersActivity extends Activity
 		};
 
 	/// PRIVATE MEMBERS
-
-	private static final int DIALOG_CHOOSE_TEAM = 0;
+	private static final int DIALOG_EXPLAIN_RULES =0;
+	private static final int DIALOG_CHOOSE_TEAM = 1;
 	private static final int IDX_COIN = 0;
 	private static final int IDX_GUERILLA = 1;
 

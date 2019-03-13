@@ -30,6 +30,7 @@ public class GameController
 			&& m_model.isValidCoinMove(old_piece, board_coords))
 		{
 			m_model.moveSelectedCoinPiece(board_coords);
+
 			m_view.invalidate();
 			moveToNextState();
 			return;
@@ -37,6 +38,7 @@ public class GameController
 
 		m_model.selectCoinPieceAt(board_coords);
 		if (old_piece != m_model.getSelectedCoinPiece())
+
 			m_view.invalidate();
 	}
 
@@ -46,12 +48,14 @@ public class GameController
 			return;
 
 		m_model.placeGuerillaPiece(board_coords);
+
 		m_view.invalidate();
 		moveToNextState();
 	}
 
 	public void moveToNextState() {
 		if (m_state != GameState.END_GAME && m_model.isGameOver()) {
+
 			m_view.invalidate();
 			m_state = GameState.END_GAME;
 			return;
@@ -112,11 +116,17 @@ public class GameController
 			m_model.setLastCoinMoveCaptured(false);
 			m_model.deselectCoinPiece();
 			m_model.setCurrentPlayer(BoardModel.Player.GUERILLA_PLAYER);
+
 			m_view.invalidate();
+
 			if(playerSelection == 'c') {
 
 				agent.makeMove();
+
+				m_view.invalidate();
 				agent.makeMove();
+
+				m_view.invalidate();
 				m_state = GameState.GUERILLA_MOVE_SECOND;
 				moveToNextState();
 			}else{
@@ -133,7 +143,9 @@ public class GameController
 			Log.d("state", "moveToNextState: g move 2");
 			m_model.clearGuerillaPieceHistory();
 			m_model.setCurrentPlayer(BoardModel.Player.COIN_PLAYER);
+
 			m_view.invalidate();
+
 			if(playerSelection == 'g'){
 				agent.makeMove();
 				if(m_model.lastCoinMoveCaptured()){
@@ -190,6 +202,7 @@ public class GameController
 			if(playerSelection == 'g') {
 				handleGuerillaInput(viewx, viewy);
 			}else{
+
 				m_view.invalidate();
 				m_state = GameState.GUERILLA_SETUP_SECOND;
 				moveToNextState();
@@ -198,6 +211,7 @@ public class GameController
 			if(playerSelection == 'g') {
 				handleGuerillaInput(viewx, viewy);
 			}else{
+
 				m_view.invalidate();
 				m_state = GameState.GUERILLA_SETUP_SECOND;
 				moveToNextState();
@@ -207,6 +221,7 @@ public class GameController
 			if(playerSelection == 'g') {
 				handleGuerillaInput(viewx, viewy);
 			}else{
+
 				m_view.invalidate();
 				m_state = GameState.GUERILLA_MOVE_SECOND;
 				moveToNextState();
@@ -217,6 +232,7 @@ public class GameController
 			if(playerSelection == 'g') {
 				handleGuerillaInput(viewx, viewy);
 			}else{
+
 				m_view.invalidate();
 				moveToNextState();
 			}
@@ -237,6 +253,7 @@ public class GameController
 
 	public void setupGuerilla(){
 		m_state = GameState.GUERILLA_SETUP_SECOND;
+
 		m_view.invalidate();
 		moveToNextState();
 	}

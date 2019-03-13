@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,24 +64,14 @@ public class GuerillaCheckersActivity extends Activity
 
 	private Dialog buildrulesdialog() {
 
-		FileReader fr = new FileReader("res/values/rules.txt");
+		rules Rules = new rules();
 		String team_names[] = getResources().getStringArray(R.array.team_names);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("hey there this changed");
+
+		builder.setTitle("Rules");
 
 		builder.setItems(team_names, m_chooseTeamHandler);
-		builder.setMessage("dmzjsh\nfjdskhkj\ngfshkfhjkdshgkjhfdjg\nshfohgkdfjhgjkdfhgjkhksghfjkdkadhfkgj" +
-				"ksjhfdjdfhjdhskjfhksjdfhfakjhfjkhfkj\nahfkdhjfhasjhahfjkafjkashkashfkahjahjskhfkjsahfk" +
-				"kjfdshahkahfjkfhkahsjkfhahkjdhsakjhkahfkjafhksjadhfjksahjshakf\nhkjsahfjkdsfhjashkjhfksadfkj" +
-				"jksahfkjdsfhjahdfkjhasfkddhfkjsaskjhkashfkjashfjksjdfhkjhdsakdhfjksahfjksahfdkjsahdjkjsadhkja" +
-				"sdfjhakjfhjksadfhjkdfhkj\nasdhfjkfhhdjksa\nhfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
-				"sdfjhakjfhjksadfhjkdfhkj\nasdhfjkfhhdjksahfjksahfjkafj\nkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
-				"sdfjhakjfhjksadfhjkdfhkjasdhfjkfhhdjksahfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
-				"sdfjhakjfhjksadfhjkdfhkjasdhfjkfhhdj\nksahfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
-				"sdfjhakjfhjksadfhjkdfhkjasdh\nfjkfhhdjksahfjksahfjkaf\njkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
-				"sdfjhakjfhjksadfhjkdfhkjasdhfjkfhh\ndjksahfjksahfjkafjkashfkdashfkjhsfkhsahfdkjsahkahdfkjashdfk"+
-				"sdfjhakjfhjksadfhjkdfhkjasdh\nfjkfhhdjksahfjksahfjkafjkav\nshfkdashfkjhsfkhsa\nhfdkjsahkahdfkjashdfk"
-		);
+		builder.setMessage(Html.fromHtml(Rules.Rules));
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				buildTeamChoiceDialog();

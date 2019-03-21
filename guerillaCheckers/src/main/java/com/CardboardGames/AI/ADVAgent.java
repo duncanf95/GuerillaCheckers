@@ -24,7 +24,7 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
-    private int maxDepth = 6;
+    private int maxDepth = 15;
 
 
     public ADVAgent() {

@@ -24,42 +24,43 @@ public class ADVAgent {
     private ArrayList<BoardModel.Piece> c_pieces = null;
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
-    private int maxDepth = 15;
+    private int maxDepth = 6;
 
 
-
-
-    public ADVAgent(){
+    public ADVAgent() {
         //model = in_model;
         //view = in_view;
         //debugInfo();
     }
 
 
-    public void setView(BoardView in_view){
+    public void setView(BoardView in_view) {
         view = in_view;
     }
 
-    public void setModel(BoardModel in_model){
+    public void setModel(BoardModel in_model) {
 
         model = in_model;
         Log.d("Class load Agent", "successful");
     }
 
-    public void setController(GameController in_controller){controller = in_controller;}
+    public void setController(GameController in_controller) {
+        controller = in_controller;
+    }
 
-    public void setAgentPlayer(char p){ agentPlayer = p; }
+    public void setAgentPlayer(char p) {
+        agentPlayer = p;
+    }
 
-    public void debugInfo(){
+    public void debugInfo() {
         Log.d("Agent", "in debug method");
-        if(model.getGPieces() != null) g_pieces = model.getGPieces();
-        if(model.getCPieces() != null) c_pieces = model.getCPieces();
+        if (model.getGPieces() != null) g_pieces = model.getGPieces();
+        if (model.getCPieces() != null) c_pieces = model.getCPieces();
 
         //Log.d("in", "debug ");
 
         Point pos = null;
         int counter = 1;
-
 
 
         // piece positions
@@ -75,7 +76,7 @@ public class ADVAgent {
 */
         //Log.d("count Cpieces", Integer.toString(c_pieces.size()));
 
-        for(BoardModel.Piece piece: c_pieces){
+        for (BoardModel.Piece piece : c_pieces) {
             pos = piece.getPosition();
             Log.d("C_Piece Pos X" + Integer.toString(counter), Integer.toString(pos.x));
             Log.d("C_Piece Pos Y" + Integer.toString(counter), Integer.toString(pos.y));
@@ -100,25 +101,25 @@ public class ADVAgent {
 
     }
 
-    public void makeMove(){
+    public void makeMove() {
         Log.d("Agent", "makeMove");
-        if(agentPlayer == 'g'){
+        if (agentPlayer == 'g') {
             placePieceGuerilla();
-        }else{
+        } else {
             Log.d("Agent", "choose coin");
             placePieceCoin();
         }
     }
 
-    private void placePieceGuerilla(){
+    private void placePieceGuerilla() {
         Point decision = guerillaDecision();
-        if(decision != null) {
+        if (decision != null) {
             Log.d("placePieceGuerilla", "decision not null");
             model.placeGuerillaPiece(decision);
         }
     }
 
-    private Point guerillaDecision(){
+    private Point guerillaDecision() {
         Point decision = null;
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         Random rand = new Random();
@@ -129,27 +130,126 @@ public class ADVAgent {
         decision = treeSearch();
 
 
-
         return decision;
     }
 
-    private void placePieceCoin(){
+    private void placePieceCoin() {
         Point decision = null;
-        if(model.lastCoinMoveCaptured()){
-            decision=coinCaptureDecision();
-        }else {
-            decision=coinDecision();
+        if (model.lastCoinMoveCaptured()) {
+            decision = coinCaptureDecision();
+        } else {
+            decision = coinDecision();
         }
         model.moveSelectedCoinPiece(decision);
     }
+
+    private void print_Pieces() {
+        for (Piece p : model.getCPieces()) {
+            Log.d("print_Pieces C", p.getPosition().toString());
+        }
+
+        for (Piece p : model.getGPieces()) {
+            Log.d("print_Pieces G", p.getPosition().toString());
+        }
+    }
+
+    private ArrayList<Boolean> priorities_c() {
+        ArrayList<Boolean> pris = new ArrayList<Boolean>();
+        boolean point1, point2, point3, point4;
+        boolean priority = false;
+        point1 = false;
+        point2 = false;
+        point3 = false;
+        point4 = false;
+
+        g_pieces = model.getGPieces();
+        print_Pieces();
+
+        for (Piece cpiece : model.getCPieces()) {
+            for (Piece gpiece : g_pieces) {
+                if (cpiece.getPosition().x == gpiece.getPosition().x && cpiece.getPosition().y == gpiece.getPosition().y) {
+                    point1 = true;
+                }
+                if (cpiece.getPosition().x - 1 == gpiece.getPosition().x && cpiece.getPosition().y == gpiece.getPosition().y) {
+                    point2 = true;
+                }
+                if (cpiece.getPosition().x == gpiece.getPosition().x && cpiece.getPosition().y - 1 == gpiece.getPosition().y) {
+                    point3 = true;
+                }
+
+                if (cpiece.getPosition().x - 1 == gpiece.getPosition().x && cpiece.getPosition().y - 1 == gpiece.getPosition().y) {
+                    point4 = true;
+                }
+            }
+            Log.d("Priority", "Point 1" + Boolean.toString(point1));
+            Log.d("Priority", "Point 2" + Boolean.toString(point2));
+            Log.d("Priority", "Point 3" + Boolean.toString(point3));
+            Log.d("Priority", "Point 4" + Boolean.toString(point4));
+
+            if ((point1 && point3) || (point1 && point2)) {
+                priority = true;
+            }
+
+            if ((point4 && point3) || (point4 && point2)) {
+                priority = true;
+            }
+
+            if(cpiece.getPosition().x > 6 || cpiece.getPosition().x < 1){
+                priority = true;
+            }
+
+            if(cpiece.getPosition().y > 6 || cpiece.getPosition().y < 1){
+                priority = true;
+            }
+
+            if (priority) {
+                pris.add(true);
+            } else {
+                pris.add(false);
+            }
+            priority = false;
+            point1 = false;
+            point2 = false;
+            point3 = false;
+            point4 = false;
+
+
+        }
+
+        int c = 0;
+        int false_c = 0;
+        for (Boolean pri : pris) {
+            c++;
+            Log.d("Priority" + Integer.toString(c), pri.toString());
+            if (!pri) {
+                false_c++;
+            }
+
+        }
+
+        if(false_c == pris.size()){
+            for (int i = 0; i < pris.size(); i ++) {
+               pris.set(i,true);
+            }
+        }
+        return pris;
+    }
+
+
 
     private Point coinDecision(){
         Point decision = null;
 
         ArrayList<Point> potMoves = null;model.getPotentialGuerillaMoves();
         ArrayList<Point> OriginalPositions= new ArrayList<Point>();
+        ArrayList<Piece> Gpieces = new ArrayList<Piece>();
         ArrayList<Node >firstLevel = new ArrayList<Node>();
         ArrayList<Point> Selectedpieces = new ArrayList<Point>();
+        ArrayList<Integer> selint = new ArrayList<Integer>();
+        ArrayList<Boolean> pris = new ArrayList<Boolean>();
+        ArrayList<BinarySort> choices = new ArrayList<BinarySort>();
+
+        pris = priorities_c();
 
         for (BoardModel.Piece p: model.getCPieces()){
             int x = 0;
@@ -165,50 +265,90 @@ public class ADVAgent {
         ArrayList<Array> moves = new ArrayList<Array>();
 
         int counter = 0;
+        int bscounter = 0;
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0;
-        for(Piece piece: model.getCPieces()){
-            for(Point point: model.getCoinPotentialMoves(piece)){
-                Node newNode = new Node(model, point, null, ' ', agentPlayer, new ArrayList<Point>(),startTime);
-                Selectedpieces.add(OriginalPositions.get(counter));
-                newNode.setState('c');
-                newNode.makeCMove(piece);
-                newNode.Expand(maxDepth, 0);
+        for(int i = 0; i < OriginalPositions.size(); i++) {
+            Log.d("CPC OPS", Integer.toString(OriginalPositions.size()));
+            if (pris.get(i) == true) {
+                choices.add(new BinarySort());
 
-                firstLevel.add(newNode);
-
-
-
-
-                while(model.getCPieces().size() < OriginalPositions.size()){
-                    model.RestorePiece();
+                Piece piece = model.getCPieces().get(i);
+                Log.d("CPC PP", model.getCPieces().get(i).getPosition().toString());
+                Log.d("CPC OPP", OriginalPositions.get(i).toString());
+                Log.d("CPC B", Integer.toString(counter));
+                if (model.getCoinPotentialMoves(piece) == null) {
+                    Log.d("CPC", "Piece unavaliable");
                 }
+                Log.d("CPC Moves", Integer.toString(model.getCoinPotentialMoves(piece).size()));
+                Log.d("CPC OP", Integer.toString(OriginalPositions.size()));
+                for (Point point : model.getCoinPotentialMoves(piece)) {
+                    Log.d("CPC F", Integer.toString(counter));
+                    Node newNode = new Node(model, point, null, ' ', agentPlayer, new ArrayList<Point>(), startTime, model.getCPieces().size());
+                    Selectedpieces.add(OriginalPositions.get(i));
+                    newNode.setState('c');
+                    newNode.makeCMove(piece);
+                    choices.get(bscounter).push(newNode);
+                    //newNode.Expand(maxDepth, 0);
+                    //selint.add(i + 0);
+                    //firstLevel.add(newNode);
 
-                for (int i = 0; i < OriginalPositions.size(); i++){
-                    model.getCPieces().get(i).setPosition(OriginalPositions.get(i));
+
+                    Log.d("CPC Size", Integer.toString(model.getCPieces().size()));
+
+                    while (model.getCPieces().size() < OriginalPositions.size()) {
+                        model.RestorePiece();
+                        Log.d("CPC A", "Added Piece");
+                    }
+
+                    for (int x = 0; x < OriginalPositions.size(); x++) {
+                        model.getCPieces().get(x).setPosition(OriginalPositions.get(x));
+                    }
+
+                    Log.d("CPC", Integer.toString(counter));
                 }
+                bscounter++;
+                selint.add(i + 0);
+                Log.d("CPC O", Integer.toString(counter));
+
+
             }
-
-            counter ++;
+            counter++;
         }
-        Node max = firstLevel.get(0);
-        int maxIterator = 0;
+        /*Node max = firstLevel.get(0);
+        int maxIterator = selint.get(0);
         counter = 0;
         for(Node n: firstLevel){
             if (n.getReward() > max.getReward()){
                 max = n;
                 maxIterator = 0;
-                maxIterator += counter;
+                maxIterator += selint.get(counter);
                 elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
-                if(elapsedTime >= 5){
+                if(elapsedTime >= 10){
                     break;
                 }
             }
             counter ++;
+        }*/
+
+        Node max = choices.get(0).GetSort().get(0);
+        int maxIterator = selint.get(0);
+        counter = 0;
+        for (BinarySort bs:choices){
+            for (Node n : bs.GetSort()){
+                if(n.getReward() >= max.getReward()){
+                    n.Expand(maxDepth,0);
+                    max = n;
+                    maxIterator = selint.get(counter);
+                }
+            }
+            counter++;
         }
-
-        model.selectCoinPieceAt(Selectedpieces.get(maxIterator));
-
+        Log.d("CPC FL", Integer.toString(firstLevel.size()));
+        Log.d("CPC MS", Integer.toString(maxIterator));
+        Log.d("CPC S", OriginalPositions.get(maxIterator).toString());
+        model.selectCoinPieceAt(OriginalPositions.get(maxIterator));
+        Log.d("CPC D", max.getChoice().toString());
         decision = max.getChoice();
 
         return decision;
@@ -234,7 +374,7 @@ public class ADVAgent {
 
         long startTime = System.currentTimeMillis();
         for (Point p: potMoves){
-            Node newNode = new Node(model, p, null, ' ', agentPlayer, new ArrayList<Point>(), startTime);
+            Node newNode = new Node(model, p, null, ' ', agentPlayer, new ArrayList<Point>(), startTime,model.getCPieces().size());
             newNode.setState('c');
             newNode.makeCMove(model.getSelectedCoinPiece());
             newNode.Expand(maxDepth,0);
@@ -292,7 +432,7 @@ public class ADVAgent {
         long startTime = System.currentTimeMillis();
         for (Point p: potMoves){
             Log.d("treeSearch", "potential move");
-            Node newNode = new Node(model, p, null, ' ', agentPlayer, piecePoints, startTime);
+            Node newNode = new Node(model, p, null, ' ', agentPlayer, piecePoints, startTime,model.getCPieces().size());
             newNode.setState('g');
             newNode.makeGMove();
             Log.d("MainModel", Integer.toString(model.getNumGuerillaPieces()));

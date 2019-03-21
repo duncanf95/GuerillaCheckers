@@ -2,13 +2,15 @@ package com.CardboardGames.AI;
 
 import android.graphics.Point;
 import android.util.Log;
+import com.CardboardGames.Models.BoardModel;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class BoardAnalyser {
-    public BoardAnalyser(){
-
+    private BoardModel bm;
+    public BoardAnalyser(BoardModel boardModel){
+        bm = boardModel;
     }
 
     public float gAnalyseGuerilla(ArrayList<Point> in_gPoints, Point choice,
@@ -165,7 +167,7 @@ public class BoardAnalyser {
     }
 
     public float cAnalyseGuerilla(ArrayList<Point> in_gPoints, Point choice,
-                                  boolean takeC, boolean takeG, int pieceRatio){
+                                  boolean takeC, boolean takeG, int pieceRatio, int diffamount){
         int x = choice.x;
         int y = choice.y;
         int average = 1;
@@ -173,12 +175,12 @@ public class BoardAnalyser {
         Point  changeX, changeY;
         int counterPlus = 1, counterMinus = 1;
         boolean found = false;
-        int result = 2000;
+        int result = 1750;
         if(takeC){
-            result -= 1000;
+            result -= 3000;
             Log.d("gAnalyse", "take available");
-        }else if(takeG){
-            result += 532;
+        }else {
+            //result += 3000;
         }
         if(in_gPoints.size() < 2){
 
@@ -204,6 +206,11 @@ public class BoardAnalyser {
             differenceY = differenceY * 35;
 
             result += differenceX + differenceY;
+
+        }
+
+        if(bm.getGuerillaPieceAt(choice.x + 1, choice.y + 1) != null){
+            Log.d("CGCheck", "true");
 
         }
 
@@ -275,47 +282,163 @@ public class BoardAnalyser {
                 average = (differenceX + differenceY)/2;
             }
         }
-        Log.d("cAnalyseG: ", Float.toString((result * pieceRatio) * average));
-        return (result * pieceRatio) * average;
+
+
+        diffamount += 1;
+        float output = ((result * pieceRatio) / average)/ diffamount;
+        Log.d("cAnalyseG: ", Float.toString(output));
+        return output;
     }
 
-    public float cAnalyseCoin(Point choice, boolean cTake, boolean gTake, int ratio){
-        float result = 7000;
+    public float cAnalyseCoin(Point choice, boolean cTake, boolean gTake, int ratio, int difamount, boolean win, int numCoin, int numG){
+        float result = 350;
         Random rand = new Random();
+        ArrayList<Boolean> potTaks = priorities_c(choice);
 
         int average = 1;
         int differenceX = 1, differenceY = 1;
 
+        if(bm.getGuerillaPieceAt(choice.x + 1, choice.y + 1) != null){
+            Log.d("CGCheck", "true");
+
+        }
+
+        for(Boolean b : potTaks){
+            if(b){
+                result -= 1000;
+            }
+        }
+
 
         int distance = 0;
         if(choice .y < 3){
-            result -= (3 - choice.y) * 190;
+            result += (3 - choice.y) * 190;
             differenceY = 3 - choice.y;
         }else if(choice.x < 3){
-            result -= (3 - choice.x) * 190;
+            result += (3 - choice.x) * 190;
             differenceX = 3 - choice.x;
         }
 
         if (choice.y > 3){
-            result -= (choice.y - 3) * 190;
+            result += (choice.y - 3) * 190;
             differenceY = choice.y - 3;
         }else if(choice.x > 3){
-            result -= (choice.x - 3) * 190;
+            result += (choice.x - 3) * 190;
             differenceX = choice.x - 3;
+        }
+
+        if(choice.x == 6 || choice.y == 6 || choice.x == 0 || choice.y == 0){
+            result -=500;
         }
 
 
 
         if(gTake){
-            result +=2000;
+            result +=1000;
+        }
+        if(cTake){
+            result -= 500;
+        }
+        if(win){
+            result+=4000;
         }
 
         average = (differenceX + differenceY)/2;
 
 
         //result = rand.nextInt(1000);
-        Log.d("cAnalyseG: ", Float.toString(((result + ((average * 219)))/ratio)));
-        return ((result)/ratio) * (average * 219);
+        difamount += 1;
+        if(numG == 0){
+            numG += 1;
+        }
+        float output = (((result)/ratio) / (average * 219))/ difamount * ((numCoin * 10))*750;
+        Log.d("cAnalyseC: ", Float.toString(output));
+        return output;
+    }
+
+    private ArrayList<Boolean> priorities_c(Point c_choice) {
+        BoardModel model = bm;
+        ArrayList<Boolean> pris = new ArrayList<Boolean>();
+        ArrayList<BoardModel.Piece> g_pieces = new ArrayList<BoardModel.Piece>();
+        boolean point1, point2, point3, point4;
+        boolean priority = false;
+        point1 = false;
+        point2 = false;
+        point3 = false;
+        point4 = false;
+
+        g_pieces = model.getGPieces();
+        //print_Pieces();
+
+
+            for (BoardModel.Piece gpiece : g_pieces) {
+                if (c_choice.x == gpiece.getPosition().x && c_choice.y == gpiece.getPosition().y) {
+                    point1 = true;
+                }
+                if (c_choice.x - 1 == gpiece.getPosition().x && c_choice.y == gpiece.getPosition().y) {
+                    point2 = true;
+                }
+                if (c_choice.x == gpiece.getPosition().x && c_choice.y - 1 == gpiece.getPosition().y) {
+                    point3 = true;
+                }
+
+                if (c_choice.x - 1 == gpiece.getPosition().x && c_choice.y - 1 == gpiece.getPosition().y) {
+                    point4 = true;
+                }
+            }
+
+            Log.d("Priority", "Point 1" + Boolean.toString(point1));
+            Log.d("Priority", "Point 2" + Boolean.toString(point2));
+            Log.d("Priority", "Point 3" + Boolean.toString(point3));
+            Log.d("Priority", "Point 4" + Boolean.toString(point4));
+
+            if ((point1 && point3) || (point1 && point2)) {
+                priority = true;
+            }
+
+            if ((point4 && point3) || (point4 && point2)) {
+                priority = true;
+            }
+
+            if(c_choice.x > 6 || c_choice.x < 1){
+                priority = true;
+            }
+
+            if(c_choice.y > 6 || c_choice.y < 1){
+                priority = true;
+            }
+
+            if (priority) {
+                pris.add(true);
+            } else {
+                pris.add(false);
+            }
+            priority = false;
+            point1 = false;
+            point2 = false;
+            point3 = false;
+            point4 = false;
+
+
+
+
+        int c = 0;
+        int false_c = 0;
+        for (Boolean pri : pris) {
+            c++;
+            Log.d("Priority" + Integer.toString(c), pri.toString());
+            if (!pri) {
+                false_c++;
+            }
+
+        }
+
+        if(false_c == pris.size()){
+            for (int i = 0; i < pris.size(); i ++) {
+                pris.set(i,true);
+            }
+        }
+        return pris;
     }
 
 }

@@ -26,6 +26,7 @@ public class Node {
     private boolean choiceMade;
     private long startTime;
     private long elapsedTime;
+    private int amountCStart;
 
     private enum GameState {
         GUERILLA_SETUP_FIRST{
@@ -74,7 +75,7 @@ public class Node {
 
     private GameState state;
 
-    public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType, ArrayList<Point> in_gPoints, long in_startTime){
+    public Node(BoardModel in_model, Point p, Node in_parent,char in_moveType, char in_agentType, ArrayList<Point> in_gPoints, long in_startTime, int c_start){
         model = new BoardModel(null);
         parent = in_parent;
         reward = rand.nextInt(700);
@@ -83,16 +84,17 @@ public class Node {
         choice = p;
         startTime = in_startTime;
         elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
+        amountCStart = c_start;
         try {
             model = in_model.clone();
-            Log.d("clone success", " node");
-            Log.d("model in mem", in_model.toString());
-            Log.d("model out mem", model.toString());
+            //Log.d("clone success", " node");
+            //Log.d("model in mem", in_model.toString());
+            //Log.d("model out mem", model.toString());
 
             gPoints = (ArrayList<Point>)in_gPoints.clone();
 
         }catch(Exception e){
-            Log.d("failed clon", "Node: " + e);
+            //Log.d("failed clon", "Node: " + e);
         }
         if(parent != null) {
 
@@ -109,10 +111,10 @@ public class Node {
 
 
         for(BoardModel.Piece piece: g_pieces) {
-            Log.d("node:", "created ");
+           // Log.d("node:", "created ");
             pos = piece.getPosition();
-            Log.d("node C_Piece Pos X", Integer.toString(pos.x));
-            Log.d("Node C_Piece Pos Y", Integer.toString(pos.y));
+            //Log.d("node C_Piece Pos X", Integer.toString(pos.x));
+            //Log.d("Node C_Piece Pos Y", Integer.toString(pos.y));
         }
 
     }
@@ -138,8 +140,8 @@ public class Node {
 
     public ArrayList<Node> expandCoin(int maxLevel, int currentLevel){
         ArrayList<BoardModel.Piece> pieces = model.getCPieces();
-        Log.d("Coin", "expanded");
-        Log.d("Coin", "amount of pieces " + pieces.size());
+        //Log.d("Coin", "expanded");
+        //Log.d("Coin", "amount of pieces " + pieces.size());
 
         ArrayList<Point> OriginalPositions= new ArrayList<Point>();
 
@@ -156,20 +158,17 @@ public class Node {
         }
         for(BoardModel.Piece p: pieces) {
             ArrayList<Point> potmoves = model.getCoinPotentialMoves(p);
-            Log.d("Coin", "found pieces");
+            //Log.d("Coin", "found pieces");
 
             for (Point point : potmoves) {
-                Log.d("Coin", "found moves");
+                //Log.d("Coin", "found moves");
                 Log.d("Coin","current state " + state.toString());
-                Node child = new Node(model, point, this, 'c', agentType, gPoints, startTime);
+                Node child = new Node(model, point, this, 'c', agentType, gPoints, startTime, amountCStart);
                 child.setStateExpand(state);
 
                 child.makeCMove(p);
                 child.moveToNextState();
-                if(child.getState() == "END"){
-                    Log.d("END", "Break");
-                    break;
-                }
+
                 if(state.toString() != Character.toString(agentType)){
                     if ((child.getReward() <= reward  || !depthReached) &&
                             !(state == GameState.END_GAME)){
@@ -178,8 +177,8 @@ public class Node {
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
                         elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
-                        if(elapsedTime >= 5){
-                            break;
+                        if(elapsedTime >= 10){
+                        //    break;
                         }
                         Log.d("TIME", Long.toString(elapsedTime));
                     }
@@ -191,11 +190,15 @@ public class Node {
                         child.Expand(maxLevel, currentLevel + 1);
                         children.add(child);
                         elapsedTime = (((System.currentTimeMillis() - startTime) / 1000)%60);
-                        if(elapsedTime >= 5){
-                            break;
+                        if(elapsedTime >= 10){
+                        //    break;
                         }
                         Log.d("TIME", Long.toString(elapsedTime));
                     }
+                }
+                if(child.getState() == "END"){
+                    Log.d("END", "Break");
+                    //break;
                 }
                 if(model.getCPieces().size() < OriginalPositions.size()) {
                     while (model.getCPieces().size() < OriginalPositions.size()){
@@ -238,14 +241,11 @@ public class Node {
 
         for(Point point: potmoves){
             checkDepthReached();
-            Node child = new Node(model, point, this, 'g', agentType, gPoints, startTime);
+            Node child = new Node(model, point, this, 'g', agentType, gPoints, startTime, amountCStart);
             child.setStateExpand(state);
             child.makeGMove();
             child.moveToNextState();
-            if(child.getState() == "END"){
-                Log.d("END", "Break");
-                break;
-            }
+
             Log.d("Guerilla","current state " + state.toString());
             if(state.toString() != Character.toString(agentType)){
                 if ((child.getReward() <= reward  || !depthReached) &&
@@ -271,6 +271,10 @@ public class Node {
                         break;
                     }
                 }
+            }
+            if(child.getState() == "END"){
+                Log.d("END", "Break");
+                break;
             }
             Log.d("Gp currentlevel", Integer.toString(currentLevel));
             Log.d("Gp currentscore", Float.toString(reward));
@@ -477,12 +481,13 @@ public class Node {
             afterMoveC += model.getNumCoinPieces();
             afterMoveG += model.getRemainingGuerillaPieces() + model.getGPieces().size();
             gPoints.add(choice);
+            int diff = amountCStart - model.getCPieces().size();
             if((afterMoveG > 0)&&(afterMoveC > 0)){
                 ratio = afterMoveG / afterMoveC;
             }
 
 
-            BoardAnalyser BA = new BoardAnalyser();
+            BoardAnalyser BA = new BoardAnalyser(model);
             float result;
 
             if(beforeMoveC > afterMoveC){
@@ -497,7 +502,7 @@ public class Node {
                 result = BA.gAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio);
 
             }else{
-                result = BA.cAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio);
+                result = BA.cAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio, diff);
             }
 
             reward = result;
@@ -516,6 +521,8 @@ public class Node {
             int afterMoveG = 0;
 
             int ratio = 1;
+            int diff = amountCStart - model.getCPieces().size();
+            boolean win = false;
 
             boolean takeC = false;
             boolean takeG = false;
@@ -530,7 +537,7 @@ public class Node {
             }
 
 
-            BoardAnalyser BA = new BoardAnalyser();
+            BoardAnalyser BA = new BoardAnalyser(model);
             float result;
 
             if(beforeMoveC > afterMoveC){
@@ -540,13 +547,16 @@ public class Node {
             if(beforeMoveG > afterMoveG){
                 takeG = true;
             }
-
+            if(state.toString() == "END"){
+                Log.d("CWIN", "True");
+                win = true;
+            }
             if(agentType == 'g'){
 
                 reward = BA.gAnalyseCoin(choice, takeC,takeG, ratio);
 
             }else if(agentType == 'c'){
-                reward = BA.cAnalyseCoin(choice, takeC,takeG, ratio);
+                reward = BA.cAnalyseCoin(choice, takeC,takeG, ratio, diff,win, c_pieces.size(), g_pieces.size());
             }
             //result = BA.gAnalyseGuerilla(gPoints, choice, takeC, takeG, ratio);
             //reward = result;

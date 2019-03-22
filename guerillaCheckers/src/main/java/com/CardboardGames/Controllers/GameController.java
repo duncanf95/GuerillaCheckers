@@ -75,26 +75,10 @@ public class GameController
 		case GUERILLA_SETUP_SECOND:
 			Log.d("state", "moveToNextState: g setup 2");
 			m_model.setCurrentPlayer(BoardModel.Player.COIN_PLAYER);
-
+			Log.d("GAMETAKE", "setup second");
+			Log.d("GAMETAKE", "plaery sel: "+playerSelection );
 			if(playerSelection == 'g'){
-				agent.makeMove();
-				if(m_model.lastCoinMoveCaptured()){
-					m_model.setCoinMustCapture(true);
-					if (m_model.selectedCoinPieceHasValidMoves()) {
-						while(m_model.lastCoinMoveCaptured()){
-							Log.d("coinmove", "found take");
-							if(m_model.getCoinPotentialMoves(m_model.getSelectedCoinPiece()).size() > 0){
-								agent.makeMove();
-							}else{
-								m_model.setCoinMustCapture(false);
-							}
-
-						}
-					}else{
-						m_model.setCoinMustCapture(false);
-					}
-				}
-				m_state = GameState.COIN_CAPTURE;
+				m_state = GameState.COIN_MOVE;
 				moveToNextState();
 			}else{
 				m_state = GameState.COIN_MOVE;
@@ -102,6 +86,26 @@ public class GameController
 			return;
 		case COIN_MOVE:
 			Log.d("state", "moveToNextState: coin move");
+			Log.d("GAMETAKE", "before move");
+			agent.makeMove();
+			Log.d("GAMETAKE", "mademove");
+			if(m_model.lastCoinMoveCaptured()){
+				m_model.setCoinMustCapture(true);
+				Log.d("GAMETAKE", "found take");
+				while(m_model.getCoinMustCapture()){
+					Log.d("GAMETAKE", "found take");
+
+					agent.coinTake();
+
+					if(!(m_model.selectedCoinPieceHasValidMoves())){
+						m_model.setCoinMustCapture(false);
+					}
+				}
+
+			}
+			m_state = GameState.GUERILLA_MOVE_FIRST;
+			//moveToNextState();
+			return;
 		case COIN_CAPTURE:
 			Log.d("state", "moveToNextState: coin capture");
 			if (m_model.lastCoinMoveCaptured()) {
@@ -120,7 +124,7 @@ public class GameController
 			m_view.invalidate();
 
 			if(playerSelection == 'c') {
-
+				Log.d("GAMETAKE", "Placing Guerilla");
 				agent.makeMove();
 
 				m_view.invalidate();
@@ -152,7 +156,7 @@ public class GameController
 					m_model.setCoinMustCapture(true);
 
 					while(m_model.getCoinMustCapture()){
-						Log.d("GAME_TAKE", "found take");
+						Log.d("GAMETAKE", "found take");
 
 						agent.coinTake();
 
@@ -160,22 +164,7 @@ public class GameController
 							m_model.setCoinMustCapture(false);
 						}
 					}
-					/*if (m_model.selectedCoinPieceHasValidMoves()) {
-						while(m_model.lastCoinMoveCaptured()){
-							Log.d("coinmove", "found take");
 
-							agent.coinTake();
-
-							if(!(m_model.selectedCoinPieceHasValidMoves())){
-								m_model.setCoinMustCapture(false);
-							}
-
-
-
-						}
-					}else{
-						m_model.setCoinMustCapture(false);
-					}*/
 				}
 				m_state = GameState.COIN_CAPTURE;
 				moveToNextState();
@@ -307,7 +296,7 @@ public class GameController
 	}
 
 	/// PRIVATE MEMBERS
-
+	int move_counter = 0;
 	private GameState m_state = GameState.GUERILLA_SETUP_FIRST;
 	private BoardModel m_model = null;
 	private BoardView m_view = null;

@@ -348,7 +348,7 @@ public class ADVAgent {
         Log.d("CPC MS", Integer.toString(maxIterator));
         Log.d("CPC S", OriginalPositions.get(maxIterator).toString());
         model.selectCoinPieceAt(OriginalPositions.get(maxIterator));
-        Log.d("CPC D", max.getChoice().toString());
+        Log.d("CPCD", max.getChoice().toString());
         decision = max.getChoice();
 
         return decision;
@@ -393,11 +393,11 @@ public class ADVAgent {
         Node maxNode = firstLevel.get(0);
 
         for(Node n: firstLevel){
-            if(n.getReward() > maxNode.getReward()){
+            if(n.getReward() >= maxNode.getReward()){
                 maxNode = n;
             }
         }
-
+        Log.d("CPCD", maxNode.getChoice().toString());
         decision = maxNode.getChoice();
         return decision;
     }

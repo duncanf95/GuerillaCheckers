@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.CardboardGames"
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 28
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_5

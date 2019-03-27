@@ -5,6 +5,7 @@ import android.app.Application;
 import android.graphics.Point;
 import android.util.Log;
 import com.CardboardGames.Controllers.GameController;
+import com.CardboardGames.Listeners.BooVariable;
 import com.CardboardGames.Models.BoardModel;
 import com.CardboardGames.Models.BoardModel.Piece;
 import com.CardboardGames.Views.BoardView;
@@ -25,7 +26,7 @@ public class ADVAgent {
     private char agentPlayer;
     private ArrayList<BinarySort> nodes = new ArrayList<BinarySort>();
     private int maxDepth = 15;
-
+    public BooVariable alisten;
 
     public ADVAgent() {
         //model = in_model;
@@ -107,9 +108,11 @@ public class ADVAgent {
         Log.d("Agent", "makeMove");
         if (agentPlayer == 'g') {
             placePieceGuerilla();
+            alisten.setBoo(true);
         } else {
             Log.d("Agent", "choose coin");
             placePieceCoin();
+            alisten.setBoo(true);
         }
     }
 

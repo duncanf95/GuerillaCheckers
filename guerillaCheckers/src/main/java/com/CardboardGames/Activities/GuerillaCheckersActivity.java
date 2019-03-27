@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -42,23 +43,70 @@ public class GuerillaCheckersActivity extends Activity
 				if(blisten.getBoo()){
 					if(agent.GetAgentChoice() == 'g'){
 						Log.d("BOOLCHANGE", "found agent");
-						blisten.setBoo(false);
-						agent.makeMove();
+
 						m_controller.moveMade = false;
 						m_controller.moveToNextState();
+
+						AsyncTask.execute(new Runnable() {
+							public void run() {
+								//TODO your background code
+								//blisten.setBoo(false);
+								//agent.makeMove();
+								Log.d("run", "works");
+							}
+						});
+
 					}else if(agent.GetAgentChoice() == 'c'){
 						m_view.invalidate();
 
 						Log.d("BOOLCHANGE", "found agent");
-						loadDialog.show();
+						//loadDialog.show();
 
-						m_view.requestLayout();
-						blisten.setBoo(false);
-						agent.makeMove();
-						m_view.requestLayout();
+						//m_view.requestLayout();
+						//m_view.forceDraw();
+
+						AsyncTask.execute(new Runnable() {
+							public void run() {
+								//TODO your background code
+								blisten.setBoo(false);
+								agent.makeMove();
+
+								if(m_model.lastCoinMoveCaptured()){
+									m_model.setCoinMustCapture(true);
+
+									while(m_model.getCoinMustCapture()){
+										Log.d("GAME_TAKE", "found take");
+
+										agent.coinTake();
+
+										if(!(m_model.selectedCoinPieceHasValidMoves())){
+											m_model.setCoinMustCapture(false);
+										}
+									}
+									m_controller.moveToNextState();
+								}
+
+								Log.d("run", "works");
+							}
+						});
+						//blisten.setBoo(false);
+						//agent.makeMove();
+						//m_view.requestLayout();
 						m_controller.moveMade = false;
-						m_controller.moveToNextState();
+						//m_controller.moveToNextState();
 					}
+				}
+			}
+		});
+
+		alisten.setListener(new BooVariable.ChangeListener() {
+			public void onChange() {
+				if(alisten.getBoo()) {
+					Log.d("BOOLCHANGE", "agent");
+					//loadDialog.show();
+					m_view.postInvalidate();
+					m_controller.moveToNextState();
+					//m_controller.moveToNextState();
 				}
 			}
 		});
@@ -80,6 +128,7 @@ public class GuerillaCheckersActivity extends Activity
 		agent = app.getAgent();
 		m_controller.setAgent(agent);
 		agent.setView(m_view);
+		agent.alisten= alisten;
 		setContentView(m_view);
 		LoadingDialogCreate();
 
@@ -188,7 +237,7 @@ public class GuerillaCheckersActivity extends Activity
 	private static final int IDX_GUERILLA = 1;
 	private boolean moveMade = false;
 	private BooVariable blisten = new BooVariable();
-	private BooVariable dlisten = new BooVariable();
+	private BooVariable alisten = new BooVariable();
 	private boolean drawUpdated = false;
 
 	GameController m_controller = null;

@@ -38,6 +38,7 @@ public class BoardView extends View
 
 	@Override
 	public void onDraw(Canvas canvas) {
+		myC = canvas;
 		drawBoard(canvas);
 		drawPieces(canvas);
 		drawHUD(canvas);
@@ -53,6 +54,16 @@ public class BoardView extends View
 		}catch (Exception e){
 
 		}
+	}
+
+	public void forceDraw(){
+		drawBoard(myC);
+		drawPieces(myC);
+		drawHUD(myC);
+		Log.d("onDraw", "Active");
+		if (m_model.isGameOver())
+			drawGameOver(myC);
+		drawUpdated = true;
 	}
 
 	public void setDrawUpdated(boolean updated){
@@ -426,4 +437,5 @@ public class BoardView extends View
 	/// @}
 	private static final boolean DEBUG_VIEW = false;
 	private boolean drawUpdated = false;
+	private Canvas myC = null;
 }

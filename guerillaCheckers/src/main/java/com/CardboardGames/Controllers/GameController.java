@@ -113,11 +113,11 @@ public class GameController
 			return;
 		case COIN_MOVE:
 			m_view.postInvalidate();
-			m_view.invalidate();
+			//m_view.invalidate();
 			Log.d("state", "moveToNextState: coin move");
 		case COIN_CAPTURE:
 			m_view.postInvalidate();
-			m_view.invalidate();
+			//m_view.invalidate();
 			Log.d("state", "moveToNextState: coin capture");
 			if (m_model.lastCoinMoveCaptured()) {
 				m_model.setCoinMustCapture(true);

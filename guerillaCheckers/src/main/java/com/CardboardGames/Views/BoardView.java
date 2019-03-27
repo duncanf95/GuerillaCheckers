@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import com.CardboardGames.R;
@@ -40,8 +41,10 @@ public class BoardView extends View
 		drawBoard(canvas);
 		drawPieces(canvas);
 		drawHUD(canvas);
+		Log.d("onDraw", "Active");
 		if (m_model.isGameOver())
 			drawGameOver(canvas);
+		drawUpdated = true;
 	}
 
 	public void setM_model(BoardModel model){
@@ -50,6 +53,10 @@ public class BoardView extends View
 		}catch (Exception e){
 
 		}
+	}
+
+	public void setDrawUpdated(boolean updated){
+		drawUpdated = updated;
 	}
 
 	public Point getCoinBoardCoords(float viewx, float viewy) {
@@ -380,6 +387,9 @@ public class BoardView extends View
 		}
 	}
 
+
+
+
 	public String getModelString(){
 		return m_model.toString();
 	}
@@ -415,4 +425,5 @@ public class BoardView extends View
 	private static final int HUD_TEXT_CLR                      = 0xFFFFFFFF;
 	/// @}
 	private static final boolean DEBUG_VIEW = false;
+	private boolean drawUpdated = false;
 }

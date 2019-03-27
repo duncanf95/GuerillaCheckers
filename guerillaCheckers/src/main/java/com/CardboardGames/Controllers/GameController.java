@@ -32,6 +32,7 @@ public class GameController
 			m_model.moveSelectedCoinPiece(board_coords);
 
 			m_view.invalidate();
+			moveMade = true;
 			moveToNextState();
 			return;
 		}
@@ -50,7 +51,12 @@ public class GameController
 		m_model.placeGuerillaPiece(board_coords);
 
 		m_view.invalidate();
+		if(m_state == GameState.GUERILLA_MOVE_SECOND || m_state == GameState.GUERILLA_SETUP_SECOND){
+			moveMade = true;
+		}
 		moveToNextState();
+
+
 	}
 
 	public void moveToNextState() {
@@ -69,14 +75,18 @@ public class GameController
 
 		switch (m_state) {
 		case GUERILLA_SETUP_FIRST:
+			m_view.postInvalidate();
+			m_view.invalidate();
 			m_state = GameState.GUERILLA_SETUP_SECOND;
 			Log.d("state", "moveToNextState: g setup 1");
 			return;
 		case GUERILLA_SETUP_SECOND:
+			m_view.postInvalidate();
+			m_view.invalidate();
 			Log.d("state", "moveToNextState: g setup 2");
 			m_model.setCurrentPlayer(BoardModel.Player.COIN_PLAYER);
 
-			if(playerSelection == 'g'){
+			if(playerSelection == 'q'){
 				agent.makeMove();
 				if(m_model.lastCoinMoveCaptured()){
 					m_model.setCoinMustCapture(true);
@@ -84,6 +94,7 @@ public class GameController
 						while(m_model.lastCoinMoveCaptured()){
 							Log.d("coinmove", "found take");
 							if(m_model.getCoinPotentialMoves(m_model.getSelectedCoinPiece()).size() > 0){
+								m_view.postInvalidate();
 								agent.makeMove();
 							}else{
 								m_model.setCoinMustCapture(false);
@@ -101,8 +112,12 @@ public class GameController
 			}
 			return;
 		case COIN_MOVE:
+			m_view.postInvalidate();
+			m_view.invalidate();
 			Log.d("state", "moveToNextState: coin move");
 		case COIN_CAPTURE:
+			m_view.postInvalidate();
+			m_view.invalidate();
 			Log.d("state", "moveToNextState: coin capture");
 			if (m_model.lastCoinMoveCaptured()) {
 				m_model.setCoinMustCapture(true);
@@ -123,6 +138,7 @@ public class GameController
 
 				agent.makeMove();
 
+
 				m_view.invalidate();
 				agent.makeMove();
 
@@ -134,20 +150,25 @@ public class GameController
 			}
 			return;
 		case GUERILLA_MOVE_FIRST:
+			m_view.postInvalidate();
+			m_view.invalidate();
 			Log.d("state", "moveToNextState: g move 1");
 			if (m_model.hasValidGuerillaPlacements()) {
 				m_state = GameState.GUERILLA_MOVE_SECOND;
 				return;
 			}
-		case GUERILLA_MOVE_SECOND: // pass-through from first
+		case GUERILLA_MOVE_SECOND:
+			m_view.postInvalidate();
+			m_view.invalidate();// pass-through from first
 			Log.d("state", "moveToNextState: g move 2");
 			m_model.clearGuerillaPieceHistory();
 			m_model.setCurrentPlayer(BoardModel.Player.COIN_PLAYER);
 
 			m_view.invalidate();
 
-			if(playerSelection == 'g'){
+			if(playerSelection == 'q'){
 				agent.makeMove();
+				m_view.invalidate();
 				if(m_model.lastCoinMoveCaptured()){
 					m_model.setCoinMustCapture(true);
 
@@ -184,6 +205,7 @@ public class GameController
 			}
 			return;
 		case END_GAME:
+			m_view.invalidate();
 			Log.d("state", "moveToNextState: end");
 			m_model.reset();
 			m_view.invalidate();
@@ -312,4 +334,6 @@ public class GameController
 	private BoardModel m_model = null;
 	private BoardView m_view = null;
 	private ADVAgent agent = null;
+	private int moveCounter = 0;
+	public boolean moveMade = false;
 }

@@ -32,7 +32,9 @@ public class ADVAgent {
         //view = in_view;
         //debugInfo();
     }
-
+    public char GetAgentChoice(){
+        return agentPlayer;
+    }
 
     public void setView(BoardView in_view) {
         view = in_view;

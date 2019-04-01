@@ -56,44 +56,47 @@ public class GuerillaCheckersActivity extends Activity
 							}
 						});
 
-					}else if(agent.GetAgentChoice() == 'c'){
+					}else if(agent.GetAgentChoice() == 'c') {
 						m_view.invalidate();
 
 						Log.d("BOOLCHANGE", "found agent");
-						//loadDialog.show();
+
 
 						//m_view.requestLayout();
 						//m_view.forceDraw();
 
-						AsyncTask.execute(new Runnable() {
-							public void run() {
-								//TODO your background code
-								blisten.setBoo(false);
-								agent.makeMove();
+						if (m_controller.getState() != "END") {
+							loadDialog.show();
+							AsyncTask.execute(new Runnable() {
+								public void run() {
+									//TODO your background code
+									blisten.setBoo(false);
+									agent.makeMove();
 
-								if(m_model.lastCoinMoveCaptured()){
-									m_model.setCoinMustCapture(true);
+									if (m_model.lastCoinMoveCaptured()) {
+										m_model.setCoinMustCapture(true);
 
-									while(m_model.getCoinMustCapture()){
-										Log.d("GAME_TAKE", "found take");
+										while (m_model.getCoinMustCapture()) {
+											Log.d("GAME_TAKE", "found take");
 
-										agent.coinTake();
+											agent.coinTake();
 
-										if(!(m_model.selectedCoinPieceHasValidMoves())){
-											m_model.setCoinMustCapture(false);
+											if (!(m_model.selectedCoinPieceHasValidMoves())) {
+												m_model.setCoinMustCapture(false);
+											}
 										}
+										m_controller.moveToNextState();
 									}
-									m_controller.moveToNextState();
-								}
 
-								Log.d("run", "works");
-							}
-						});
-						//blisten.setBoo(false);
-						//agent.makeMove();
-						//m_view.requestLayout();
-						m_controller.moveMade = false;
-						//m_controller.moveToNextState();
+									Log.d("run", "works");
+								}
+							});
+							//blisten.setBoo(false);
+							//agent.makeMove();
+							//m_view.requestLayout();
+							m_controller.moveMade = false;
+							//m_controller.moveToNextState();
+						}
 					}
 				}
 			}
@@ -103,6 +106,12 @@ public class GuerillaCheckersActivity extends Activity
 			public void onChange() {
 				if(alisten.getBoo()) {
 					Log.d("BOOLCHANGE", "agent");
+
+					m_Handler.post(new Runnable() {
+						public void run(){
+							loadDialog.hide();
+						}
+					});
 					//loadDialog.show();
 					m_view.postInvalidate();
 					m_controller.moveToNextState();
@@ -134,15 +143,7 @@ public class GuerillaCheckersActivity extends Activity
 
 		showDialog(DIALOG_CHOOSE_TEAM);
 
-		Handler mHandler = new Handler();
-		mHandler.postDelayed(new Runnable() {
-			public void run() {
-				//mMainController.grads(mLytHowToPlay, true, FaceTypes.FACEIT, GradTypes.NONE, 8);
-				m_view.requestLayout();
-				m_view.invalidate();
-
-			}
-		},2000);
+		m_Handler = new Handler();
 	}
 
 	public boolean onTouch(View view, MotionEvent event) {
@@ -245,4 +246,5 @@ public class GuerillaCheckersActivity extends Activity
 	BoardView m_view = null;
 	AlertDialog loadDialog;
 	private ADVAgent agent = null;
+	private Handler m_Handler;
 }

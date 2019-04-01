@@ -132,7 +132,7 @@ public class GameController
 			m_model.deselectCoinPiece();
 			m_model.setCurrentPlayer(BoardModel.Player.GUERILLA_PLAYER);
 
-			m_view.invalidate();
+//			m_view.invalidate();
 
 			if(playerSelection == 'c') {
 
@@ -278,6 +278,10 @@ public class GameController
 
 		m_view.invalidate();
 		moveToNextState();
+	}
+
+	public String getState(){
+		return m_state.toString();
 	}
 
 

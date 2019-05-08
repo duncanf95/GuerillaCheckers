@@ -108,7 +108,7 @@ public class ADVAgent {
         Log.d("Agent", "makeMove");
         if (agentPlayer == 'g') {
             placePieceGuerilla();
-            alisten.setBoo(true);
+            //alisten.setBoo(true);
         } else {
             Log.d("Agent", "choose coin");
             placePieceCoin();
@@ -409,6 +409,7 @@ public class ADVAgent {
 
     private Point treeSearch()
     {
+        Log.d("makeMove", "start");
         ArrayList<Point> potMoves = model.getPotentialGuerillaMoves();
         ArrayList<Point> OriginalPositions= new ArrayList<Point>();
 
@@ -436,6 +437,7 @@ public class ADVAgent {
         }
         long startTime = System.currentTimeMillis();
         for (Point p: potMoves){
+            Log.d("treePotMoves", Integer.toString(counter));
             Log.d("treeSearch", "potential move");
             Node newNode = new Node(model, p, null, ' ', agentPlayer, piecePoints, startTime,model.getCPieces().size());
             newNode.setState('g');

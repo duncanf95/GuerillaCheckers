@@ -1,4 +1,4 @@
-#Mon Apr 01 08:10:58 BST 2019
+#Wed May 08 12:27:37 BST 2019
 base.0=/home/duncan/Guerilla Checkers/GuerillaCheckers/guerillaCheckers/build/intermediates/transforms/dexMerger/debug/0
 path.0=classes.dex
 renamed.0=classes.dex

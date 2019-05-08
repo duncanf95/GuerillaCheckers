@@ -44,15 +44,15 @@ public class GuerillaCheckersActivity extends Activity
 					if(agent.GetAgentChoice() == 'g'){
 						Log.d("BOOLCHANGE", "found agent");
 
-						m_controller.moveMade = false;
-						m_controller.moveToNextState();
+						//m_controller.moveMade = false;
+						//m_controller.moveToNextState();
 
 						AsyncTask.execute(new Runnable() {
 							public void run() {
 								//TODO your background code
 								//blisten.setBoo(false);
 								//agent.makeMove();
-								Log.d("run", "works");
+								//Log.d("run", "works");
 							}
 						});
 
@@ -215,11 +215,17 @@ public class GuerillaCheckersActivity extends Activity
 			public void onClick(DialogInterface dialog, int idx_team) {
 				switch (idx_team) {
 				case IDX_COIN: // TODO: implement
+					Log.d("onClick", "1");
 					m_model.setPlayer('c');
+					Log.d("onClick", "2");
 					m_controller.setupGuerilla();
+					Log.d("onClick", "3");
 					m_view.invalidate();
+					Log.d("onClick", "4");
 					agent.makeMove();
+					Log.d("onClick", "5");
 					m_view.invalidate();
+					Log.d("onClick", "6");
 					agent.makeMove();
 					break;
 				case IDX_GUERILLA: // TODO: implement
